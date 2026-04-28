@@ -1,51 +1,80 @@
 using UnityEngine;
-using UnityEngine.UI; // Thêm dòng này để gọi UI
-using TMPro; // Thêm dòng này để gọi chữ TextMeshPro
+using UnityEngine.UI;
+using TMPro;
 
+/// <summary>
+/// Quản lý máu của người chơi.
+/// Hỗ trợ trạng thái miễn nhiễm sát thương (i-frames) khi đang Dash.
+/// </summary>
 public class Health : MonoBehaviour
 {
     public int maxHealth = 100;
     public int currentHealth;
 
-    [Header("Giao Dien Thanh Mau")]
-    public Image healthFillImage; // Kéo HealthBar_Fill vào đây
-    public TextMeshProUGUI hpText; // Kéo HP_Text vào đây
+    [Header("Giao Diện Thanh Máu")]
+    public Image healthFillImage;       // Kéo HealthBar_Fill vào đây
+    public TextMeshProUGUI hpText;      // Kéo HP_Text vào đây
 
     [Header("Quản lý Game Over")]
     public GameOverManager gameOverManager;
+
+    // Trạng thái miễn nhiễm — được PlayerDash bật/tắt
+    private bool isInvincible = false;
+
     void Start()
     {
         currentHealth = maxHealth;
         UpdateHealthUI();
     }
 
+    /// <summary>
+    /// Nhận sát thương. Nếu đang i-frames (dash) thì bỏ qua hoàn toàn.
+    /// </summary>
     public void TakeDamage(int damage)
     {
+        // ← ĐIỂM QUAN TRỌNG: Bỏ qua mọi sát thương khi đang Dash
+        if (isInvincible)
+        {
+            Debug.Log("[Health] Đang i-frames — miễn nhiễm sát thương!");
+            return;
+        }
+
         currentHealth -= damage;
+
         if (currentHealth <= 0)
         {
             currentHealth = 0;
             if (gameOverManager != null)
-            {
-                gameOverManager.ShowGameOver(); // Kích hoạt Game Over!
-            }
+                gameOverManager.ShowGameOver();
         }
 
         UpdateHealthUI();
     }
 
-    // Hàm chuyên dùng để cập nhật giao diện
-    void UpdateHealthUI()
+    /// <summary>Bật hoặc tắt trạng thái miễn nhiễm sát thương (i-frames).</summary>
+    public void SetInvincible(bool value)
+    {
+        isInvincible = value;
+        Debug.Log($"[Health] I-frames: {(value ? "BẬT" : "TẮT")}");
+    }
+
+    /// <summary>Hồi máu cho người chơi (dùng cho item heal).</summary>
+    public void Heal(int amount)
+    {
+        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+        UpdateHealthUI();
+    }
+
+    /// <summary>Trả về true nếu đang trong trạng thái miễn nhiễm.</summary>
+    public bool IsInvincible() => isInvincible;
+
+    // Cập nhật giao diện thanh máu và text
+    private void UpdateHealthUI()
     {
         if (healthFillImage != null)
-        {
-            // Tính phần trăm máu (từ 0.0 đến 1.0) để báo cho thanh Fill Amount
             healthFillImage.fillAmount = (float)currentHealth / maxHealth;
-        }
 
         if (hpText != null)
-        {
             hpText.text = currentHealth + " / " + maxHealth;
-        }
     }
 }
