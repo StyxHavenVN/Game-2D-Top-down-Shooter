@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI; // CẦN THÊM DÒNG NÀY ĐỂ ĐIỀU KHIỂN UI
+using UnityEngine.UI;
 
 public class EnemyHealth : MonoBehaviour
 {
@@ -7,12 +7,16 @@ public class EnemyHealth : MonoBehaviour
     private int currentHealth;
 
     [Header("Giao diện Máu")]
-    public Image healthFill; // Nơi gắn thanh máu đỏ vào
+    public Image healthFill;
+
+    // THÊM MỚI: Lượng Kinh nghiệm rớt ra khi con quái này chết
+    [Header("Phần thưởng")]
+    public int expReward = 10;
 
     void Start()
     {
         currentHealth = maxHealth;
-        UpdateHealthBar(); // Cập nhật thanh máu lúc mới sinh ra
+        UpdateHealthBar();
     }
 
     public void TakeDamage(int damage)
@@ -20,7 +24,7 @@ public class EnemyHealth : MonoBehaviour
         currentHealth -= damage;
 
         Debug.Log(gameObject.name + " bị dính đòn! Máu còn: " + currentHealth);
-        UpdateHealthBar(); // Gọi hàm cập nhật thanh máu mỗi khi mất máu
+        UpdateHealthBar();
 
         if (currentHealth <= 0)
         {
@@ -28,12 +32,10 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
-    // Hàm cập nhật giao diện
     void UpdateHealthBar()
     {
         if (healthFill != null)
         {
-            // Tính toán tỷ lệ phần trăm (0.0 đến 1.0)
             healthFill.fillAmount = (float)currentHealth / maxHealth;
         }
     }
@@ -42,10 +44,12 @@ public class EnemyHealth : MonoBehaviour
     {
         Debug.Log(gameObject.name + " đã bị tiêu diệt!");
 
-        // MỚI THÊM: Cho Player 35 Kinh nghiệm khi con quái này chết
-        if (PlayerExperience.instance != null)
+        // SỬA LẠI Ở ĐÂY: Tìm cục PlayerStats và cộng điểm EXP
+        PlayerStats playerStats = FindAnyObjectByType<PlayerStats>();
+        if (playerStats != null)
         {
-            PlayerExperience.instance.AddXP(35); // Bạn có thể đổi số 35 thành lượng XP tùy thích!
+            // Gọi hàm AddExp nằm trong file PlayerStats.cs
+            playerStats.AddExp(expReward);
         }
 
         Destroy(gameObject);
