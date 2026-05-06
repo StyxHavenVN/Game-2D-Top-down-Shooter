@@ -2050,12 +2050,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32.6
+  m_fontSize: 31.67
   m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 94.7
+  m_fontSizeMax: 31.67
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -2424,7 +2424,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 27.3, y: -20}
+  m_AnchoredPosition: {x: 27.300049, y: -20}
   m_SizeDelta: {x: 920.1737, y: 48.8853}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1153328938
@@ -2636,14 +2636,14 @@ MonoBehaviour:
   renderDistance: 2
   scale: 10
   groundTilemap: {fileID: 1245024263}
-  waterTile: {fileID: 11400000, guid: e3dde1e3752ac284f90b42d71ac042fd, type: 2}
-  sandTile: {fileID: 11400000, guid: e3dde1e3752ac284f90b42d71ac042fd, type: 2}
-  grassTile: {fileID: 11400000, guid: e3dde1e3752ac284f90b42d71ac042fd, type: 2}
+  waterTile: {fileID: 11400000, guid: 0380815d9a5050d4ea3f7ce4dd6f5b96, type: 2}
+  sandTile: {fileID: 11400000, guid: 0380815d9a5050d4ea3f7ce4dd6f5b96, type: 2}
+  grassTile: {fileID: 11400000, guid: 0380815d9a5050d4ea3f7ce4dd6f5b96, type: 2}
   detailTilemap: {fileID: 1245024263}
   grassDetails:
-  - {fileID: 11400000, guid: ff2806e0d20fd4f40bdd0b2f4e536ca2, type: 2}
-  - {fileID: 11400000, guid: 963494f142f9af04080792eec0aa46a1, type: 2}
-  - {fileID: 11400000, guid: 20e525372a18c384fa1e33bde5f80ae6, type: 2}
+  - {fileID: 11400000, guid: 1ce698304492a24469d42251760f97e2, type: 2}
+  - {fileID: 11400000, guid: e037a8ded0e335542bd5c60b7cee85af, type: 2}
+  - {fileID: 11400000, guid: b7efb15e28f01e3459fd27a4321b763d, type: 2}
   grassDensity: 0.2
 --- !u!4 &1208595884
 Transform:
