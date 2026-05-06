@@ -13,6 +13,9 @@ public class EnemyHealth : MonoBehaviour
     [Header("Phần thưởng")]
     public int expReward = 10;
 
+    [Header("Vật phẩm rơi ra")]
+    public GameObject expOrbPrefab;
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -44,12 +47,9 @@ public class EnemyHealth : MonoBehaviour
     {
         Debug.Log(gameObject.name + " đã bị tiêu diệt!");
 
-        // SỬA LẠI Ở ĐÂY: Tìm cục PlayerStats và cộng điểm EXP
-        PlayerStats playerStats = FindAnyObjectByType<PlayerStats>();
-        if (playerStats != null)
+        if (expOrbPrefab != null)
         {
-            // Gọi hàm AddExp nằm trong file PlayerStats.cs
-            playerStats.AddExp(expReward);
+            Instantiate(expOrbPrefab, transform.position, Quaternion.identity);
         }
 
         Destroy(gameObject);

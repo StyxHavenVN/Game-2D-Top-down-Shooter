@@ -2636,14 +2636,12 @@ MonoBehaviour:
   renderDistance: 2
   scale: 10
   groundTilemap: {fileID: 1245024263}
-  waterTile: {fileID: 11400000, guid: 0380815d9a5050d4ea3f7ce4dd6f5b96, type: 2}
-  sandTile: {fileID: 11400000, guid: 0380815d9a5050d4ea3f7ce4dd6f5b96, type: 2}
-  grassTile: {fileID: 11400000, guid: 0380815d9a5050d4ea3f7ce4dd6f5b96, type: 2}
+  waterTile: {fileID: 11400000, guid: 56c4897087777c14fa9beab708e8d7a8, type: 2}
+  sandTile: {fileID: 11400000, guid: 56c4897087777c14fa9beab708e8d7a8, type: 2}
+  grassTile: {fileID: 11400000, guid: 56c4897087777c14fa9beab708e8d7a8, type: 2}
   detailTilemap: {fileID: 1245024263}
   grassDetails:
-  - {fileID: 11400000, guid: 1ce698304492a24469d42251760f97e2, type: 2}
-  - {fileID: 11400000, guid: e037a8ded0e335542bd5c60b7cee85af, type: 2}
-  - {fileID: 11400000, guid: b7efb15e28f01e3459fd27a4321b763d, type: 2}
+  - {fileID: 11400000, guid: 2ce2b575df9b5034b9150412010b18a5, type: 2}
   grassDensity: 0.2
 --- !u!4 &1208595884
 Transform:
