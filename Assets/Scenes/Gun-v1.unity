@@ -1094,7 +1094,7 @@ GameObject:
   - component: {fileID: 917658877}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2643,6 +2643,8 @@ MonoBehaviour:
   grassDetails:
   - {fileID: 11400000, guid: 2ce2b575df9b5034b9150412010b18a5, type: 2}
   grassDensity: 0.2
+  treePrefab: {fileID: 2736401732433817838, guid: 4154fe023eb81e04d9931bb75998a6ac, type: 3}
+  treeDensity: 0.02
 --- !u!4 &1208595884
 Transform:
   m_ObjectHideFlags: 0
