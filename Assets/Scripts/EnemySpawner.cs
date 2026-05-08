@@ -46,7 +46,7 @@ public class EnemySpawner : MonoBehaviour
         GameObject newEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
 
         // Cường hóa con quái vừa sinh ra dựa theo hệ số độ khó hiện tại
-        Health enemyHealth = newEnemy.GetComponent<Health>();
+        EnemyHealth enemyHealth = newEnemy.GetComponent<EnemyHealth>();
         if (enemyHealth != null)
         {
             // Nhân máu gốc (100) với độ khó. Ví dụ hệ số 1.5 thì quái sẽ có 150 máu.
