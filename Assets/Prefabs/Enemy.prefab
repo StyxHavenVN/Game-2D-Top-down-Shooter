@@ -442,6 +442,3 @@ MonoBehaviour:
   maxHealth: 50
   healthFill: {fileID: 2596914517263565944}
   expReward: 10
-  expOrbPrefab: {fileID: 7117957361752824279, guid: b0e668b8d95534143aee3e74ce848871, type: 3}
-  spriteRenderer: {fileID: 0}
-  flashDuration: 0.1
