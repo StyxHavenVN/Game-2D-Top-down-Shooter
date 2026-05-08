@@ -129,15 +129,32 @@ public class MapGenerator : MonoBehaviour
 
     void SpawnObstacles(Vector3Int tilePosition)
     {
+        // 1. Quay số 1 lần duy nhất cho mỗi ô gạch
+        float roll = Random.value;
+        float cumulativeDensity = 0;
+
         foreach (ObstacleData obs in obstacleList)
         {
-            if (obs.prefab != null && Random.value < obs.density)
-            {
-                Vector3 worldPos = groundTilemap.GetCellCenterWorld(tilePosition);
-                Instantiate(obs.prefab, worldPos, Quaternion.identity, treeContainer);
+            cumulativeDensity += obs.density;
 
-                // break giúp đảm bảo mỗi ô gạch chỉ mọc tối đa 1 vật thể, 
-                // tránh tình trạng Đá mọc đè lên Cây.
+            // Nếu con số may mắn nằm trong vùng tỷ lệ của vật thể này
+            if (roll < cumulativeDensity)
+            {
+                if (obs.prefab == null) break;
+
+                Vector3 worldPos = groundTilemap.GetCellCenterWorld(tilePosition);
+
+                // 2. KIỂM TRA RADAR (Sửa lỗi chồng lấn)
+                // Quét một vòng tròn bán kính 0.8 đơn vị quanh vị trí định mọc
+                // Lưu ý: Các Prefab cây/đá của bạn PHẢI CÓ Collider 2D thì radar mới thấy nhé
+                Collider2D hit = Physics2D.OverlapCircle(worldPos, 0.8f);
+
+                if (hit == null) // Nếu vùng này hoàn toàn trống trải
+                {
+                    Instantiate(obs.prefab, worldPos, Quaternion.identity, treeContainer);
+                }
+
+                // Đã xử lý xong ô này (Dù mọc được hay bị vướng radar cũng dừng lại)
                 break;
             }
         }

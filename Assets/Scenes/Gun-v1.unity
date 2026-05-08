@@ -2701,6 +2701,15 @@ MonoBehaviour:
   - name: tree
     prefab: {fileID: 2736401732433817838, guid: 4154fe023eb81e04d9931bb75998a6ac, type: 3}
     density: 0.004
+  - name: tree1
+    prefab: {fileID: 2736401732433817838, guid: e8321f3291551fd4ca060a95806bf4c6, type: 3}
+    density: 0.01
+  - name: tree2
+    prefab: {fileID: 2736401732433817838, guid: 7bb941e3d193df2448cb39583b02c644, type: 3}
+    density: 0.002
+  - name: tree 3
+    prefab: {fileID: 2736401732433817838, guid: 30fa644762605504b9aa39a9963dd63d, type: 3}
+    density: 0.01
   - name: rock0
     prefab: {fileID: 5240602011275926751, guid: 61c93f8d84b65c94e91e35db68222cfa, type: 3}
     density: 0.004
