@@ -25,11 +25,19 @@ public class MapGenerator : MonoBehaviour
     public TileBase[] grassDetails;
     [Range(0f, 1f)] public float grassDensity = 0.2f;
 
-    // THÊM MỚI: Các biến để quản lý việc trồng cây (Vật thể)
-    [Header("Cài đặt Vật cản (Cây cối)")]
-    public GameObject treePrefab;             // Kéo Prefab cục Cây vào đây!
-    [Range(0f, 1f)] public float treeDensity = 0.05f; // Tỷ lệ mọc cây (0.05 = 5%)
-    private Transform treeContainer;          // Thùng chứa cây để cửa sổ Hierarchy không bị rác
+    // --- PHẦN NÂNG CẤP: DANH SÁCH VẬT CẢN ĐA DẠNG ---
+    [System.Serializable]
+    public class ObstacleData
+    {
+        public string name;           // Tên gợi nhớ (ví dụ: Cây thông, Đá cuội)
+        public GameObject prefab;     // Prefab của vật thể
+        [Range(0f, 0.2f)]
+        public float density = 0.05f; // Tỷ lệ mọc riêng của loại này
+    }
+
+    [Header("Cài đặt Vật cản (Đa dạng)")]
+    public List<ObstacleData> obstacleList = new List<ObstacleData>();
+    private Transform treeContainer;
 
     private Dictionary<Vector2Int, bool> generatedChunks = new Dictionary<Vector2Int, bool>();
     private Vector2Int currentPlayerChunk;
@@ -38,10 +46,7 @@ public class MapGenerator : MonoBehaviour
     {
         offsetX = Random.Range(-9999f, 9999f);
         offsetY = Random.Range(-9999f, 9999f);
-
-        // Tạo ra một thư mục rỗng để chứa toàn bộ cây sinh ra, giúp game đỡ lộn xộn
         treeContainer = new GameObject("TreeContainer").transform;
-
         currentPlayerChunk = GetChunkPosition(player.position);
         UpdateChunks();
     }
@@ -49,9 +54,7 @@ public class MapGenerator : MonoBehaviour
     void Update()
     {
         if (player == null) return;
-
         Vector2Int currentChunk = GetChunkPosition(player.position);
-
         if (currentChunk != currentPlayerChunk)
         {
             currentPlayerChunk = currentChunk;
@@ -62,7 +65,6 @@ public class MapGenerator : MonoBehaviour
     Vector2Int GetChunkPosition(Vector3 playerPos)
     {
         if (groundTilemap == null) return Vector2Int.zero;
-
         Vector3Int cellPosition = groundTilemap.WorldToCell(playerPos);
         return new Vector2Int(
             Mathf.FloorToInt((float)cellPosition.x / chunkSize),
@@ -77,7 +79,6 @@ public class MapGenerator : MonoBehaviour
             for (int yOffset = -renderDistance; yOffset <= renderDistance; yOffset++)
             {
                 Vector2Int chunkToGenerate = new Vector2Int(currentPlayerChunk.x + xOffset, currentPlayerChunk.y + yOffset);
-
                 if (!generatedChunks.ContainsKey(chunkToGenerate))
                 {
                     GenerateChunk(chunkToGenerate);
@@ -104,17 +105,12 @@ public class MapGenerator : MonoBehaviour
                 float noiseValue = Mathf.PerlinNoise(xCoord, yCoord);
 
                 TileBase tileToSet = grassTile;
-
                 if (noiseValue < 0.35f) tileToSet = waterTile;
                 else if (noiseValue < 0.45f) tileToSet = sandTile;
 
-                // Tọa độ của ô gạch hiện tại
                 Vector3Int tilePosition = new Vector3Int(tileX, tileY, 0);
-
-                // Lát gạch nền đất
                 groundTilemap.SetTile(tilePosition, tileToSet);
 
-                // Chỉ trồng cây cỏ lên trên lớp đất (grassTile)
                 if (tileToSet == grassTile)
                 {
                     // 1. Trồng cỏ trang trí (Tile)
@@ -124,17 +120,25 @@ public class MapGenerator : MonoBehaviour
                         detailTilemap.SetTile(tilePosition, randomGrass);
                     }
 
-                    // 2. THÊM MỚI: Trồng cây làm vật cản (GameObject)
-                    // Random.value sẽ quay số từ 0.0 đến 1.0. Nếu nhỏ hơn 0.05 thì trúng giải trồng cây
-                    if (treePrefab != null && Random.value < treeDensity)
-                    {
-                        // Lấy tọa độ trung tâm của ô gạch để đặt cây cho ngay ngắn
-                        Vector3 worldPos = groundTilemap.GetCellCenterWorld(tilePosition);
-
-                        // Đẻ ra cái cây và nhét nó vào TreeContainer
-                        Instantiate(treePrefab, worldPos, Quaternion.identity, treeContainer);
-                    }
+                    // 2. PHẦN NÂNG CẤP: Duyệt danh sách vật cản để spawn
+                    SpawnObstacles(tilePosition);
                 }
+            }
+        }
+    }
+
+    void SpawnObstacles(Vector3Int tilePosition)
+    {
+        foreach (ObstacleData obs in obstacleList)
+        {
+            if (obs.prefab != null && Random.value < obs.density)
+            {
+                Vector3 worldPos = groundTilemap.GetCellCenterWorld(tilePosition);
+                Instantiate(obs.prefab, worldPos, Quaternion.identity, treeContainer);
+
+                // break giúp đảm bảo mỗi ô gạch chỉ mọc tối đa 1 vật thể, 
+                // tránh tình trạng Đá mọc đè lên Cây.
+                break;
             }
         }
     }
