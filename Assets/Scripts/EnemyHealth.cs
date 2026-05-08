@@ -10,7 +10,10 @@ public class EnemyHealth : MonoBehaviour
     public Image healthFill;
 
     [Header("Phần thưởng")]
-    public int expReward = 10; // ← dòng này bị mất, thêm lại vào đây
+    public int expReward = 10;
+
+    [Tooltip("Kéo Prefab ExpOrb vào đây")]
+    public GameObject expOrbPrefab; // ← Đã thêm biến chứa Prefab Ngọc EXP
 
     void Start()
     {
@@ -38,10 +41,17 @@ public class EnemyHealth : MonoBehaviour
     {
         Debug.Log(gameObject.name + " đã bị tiêu diệt!");
 
-        // Cộng EXP cho player
-        PlayerStats playerStats = FindAnyObjectByType<PlayerStats>();
+        // Đã tắt phần cộng thẳng EXP vào người chơi
+        /* PlayerStats playerStats = FindAnyObjectByType<PlayerStats>();
         if (playerStats != null)
             playerStats.AddExp(expReward);
+        */
+
+        // Rớt ngọc EXP ra đất tại vị trí quái chết
+        if (expOrbPrefab != null)
+        {
+            Instantiate(expOrbPrefab, transform.position, Quaternion.identity);
+        }
 
         // Báo kill lên GameManager
         if (GameManager.Instance != null)
