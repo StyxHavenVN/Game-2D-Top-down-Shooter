@@ -1,52 +1,126 @@
+// GameManager.cs
 using UnityEngine;
+using TMPro;
 
+/// <summary>
+/// Singleton quản lý trạng thái game: đếm kill, kích hoạt Boss.
+/// Các script khác gọi GameManager.Instance để truy cập.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
-    [Header("UI & Object References")]
-    public GameObject weaponSelectionUI; // Kéo thả Panel chọn vũ khí vào đây
-    public GameObject player;            // Kéo thả nhân vật Player vào đây
+    // ── Singleton ──────────────────────────────────────────────
+    public static GameManager Instance { get; private set; }
 
-    // Enum giúp định nghĩa các loại vũ khí gọn gàng hơn
-    public enum WeaponType { Pistol, Shotgun, Sword }
+    // ── Cài đặt Boss ───────────────────────────────────────────
+    [Header("Cài đặt Boss")]
+    public GameObject bossPrefab;          // Kéo Boss Prefab vào đây
+    public int minKillsToSpawnBoss = 100;  // Ngưỡng tối thiểu
+    public int maxKillsToSpawnBoss = 200;  // Ngưỡng tối đa
+    public Transform player;               // Kéo Player vào đây
 
-    // Biến static để các script khác (như PlayerAttack) có thể dễ dàng đọc được vũ khí đang cầm
-    public static WeaponType currentWeapon;
+    // ── UI Kill Counter ────────────────────────────────────────
+    [Header("UI Kill Counter")]
+    public TextMeshProUGUI killCountText;  // Kéo Text "Kills" vào đây
+
+    // ── Biến nội bộ ────────────────────────────────────────────
+    private int currentKills = 0;          // Số kill hiện tại
+    private int killThreshold;             // Ngưỡng ngẫu nhiên để Boss xuất hiện
+    private bool bossSpawned = false;      // Boss đã được triệu hồi chưa?
+    private EnemySpawner enemySpawner;     // Tham chiếu để dừng spawn quái khi Boss xuất hiện
+
+    // ──────────────────────────────────────────────────────────
+    void Awake()
+    {
+        // Singleton pattern: đảm bảo chỉ có 1 GameManager tồn tại
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
 
     void Start()
     {
-        // Khi mới vào game: Dừng thời gian, hiện bảng chọn vũ khí, ẩn Player đi
-        Time.timeScale = 0f;
-        weaponSelectionUI.SetActive(true);
-        player.SetActive(false);
+        // Tìm EnemySpawner trong scene
+        enemySpawner = FindAnyObjectByType<EnemySpawner>();
+
+        // Tự động tìm Player nếu quên kéo thả
+        if (player == null)
+            player = GameObject.FindWithTag("Player")?.transform;
+
+        // Roll ngẫu nhiên ngưỡng Boss ngay từ đầu game
+        killThreshold = Random.Range(minKillsToSpawnBoss, maxKillsToSpawnBoss + 1);
+
+        Debug.Log($"[GameManager] Boss sẽ xuất hiện tại: {killThreshold} kills");
+
+        // Cập nhật UI ban đầu
+        UpdateKillUI();
     }
 
-    // 3 Hàm này sẽ được gọi khi bấm 3 nút tương ứng
-    public void SelectPistol()
+    // ──────────────────────────────────────────────────────────
+    /// <summary>
+    /// Hàm này được EnemyHealth.cs gọi mỗi khi 1 con quái chết.
+    /// </summary>
+    public void RegisterKill()
     {
-        currentWeapon = WeaponType.Pistol;
-        StartGame();
+        // Nếu Boss đã ra rồi thì không đếm thêm nữa
+        if (bossSpawned) return;
+
+        currentKills++;
+        UpdateKillUI();
+
+        Debug.Log($"[GameManager] Kill: {currentKills} / {killThreshold}");
+
+        // Kiểm tra ngưỡng Boss
+        if (currentKills >= killThreshold)
+        {
+            SpawnBoss();
+        }
     }
 
-    public void SelectShotgun()
+    // ──────────────────────────────────────────────────────────
+    /// <summary>
+    /// Triệu hồi Boss và dừng spawn quái thường.
+    /// </summary>
+    private void SpawnBoss()
     {
-        currentWeapon = WeaponType.Shotgun;
-        StartGame();
+        if (bossSpawned) return;
+        bossSpawned = true;
+
+        Debug.Log("[GameManager] *** BOSS XUẤT HIỆN ***");
+
+        // Dừng EnemySpawner để quái thường không spawn nữa
+        if (enemySpawner != null)
+            enemySpawner.enabled = false;
+
+        // Spawn Boss cách player 10 units về bên phải
+        if (bossPrefab != null && player != null)
+        {
+            Vector3 spawnPos = player.position + new Vector3(10f, 0f, 0f);
+            Instantiate(bossPrefab, spawnPos, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] Chưa gán bossPrefab hoặc player!");
+        }
+
+        // Cập nhật UI: đổi text thành "BOSS!" 
+        if (killCountText != null)
+            killCountText.text = "⚠ BOSS!";
     }
 
-    public void SelectSword()
+    // ──────────────────────────────────────────────────────────
+    /// <summary>
+    /// Cập nhật text hiển thị số kill trên HUD.
+    /// </summary>
+    private void UpdateKillUI()
     {
-        currentWeapon = WeaponType.Sword;
-        StartGame();
+        if (killCountText != null)
+            killCountText.text = $"Kills: {currentKills} / {killThreshold}";
     }
 
-    private void StartGame()
-    {
-        // Tắt bảng chọn, hiện Player, và cho thời gian chạy lại bình thường
-        weaponSelectionUI.SetActive(false);
-        player.SetActive(true);
-        Time.timeScale = 1f;
-
-        // In ra Console để test xem đã lưu đúng vũ khí chưa
-        Debug.Log("Game Bắt Đầu! Vũ khí đang trang bị: " + currentWeapon.ToString());
-    }
+    // ── Getter công khai ───────────────────────────────────────
+    public int GetKills() => currentKills;
+    public bool IsBossSpawned() => bossSpawned;
 }
