@@ -2703,13 +2703,25 @@ MonoBehaviour:
     density: 0.004
   - name: rock0
     prefab: {fileID: 5240602011275926751, guid: 61c93f8d84b65c94e91e35db68222cfa, type: 3}
-    density: 0.001
+    density: 0.004
   - name: rock1
     prefab: {fileID: 5240602011275926751, guid: 55947f1de5c22fa4e8d0de26724dccc7, type: 3}
-    density: 0.001
+    density: 0.004
   - name: rock2
     prefab: {fileID: 5240602011275926751, guid: 482bf0c9d8c593b4ead49c96339d45ff, type: 3}
-    density: 0.001
+    density: 0.004
+  - name: stick0
+    prefab: {fileID: 5240602011275926751, guid: eff6bf502edc4c04bac8fac7a1352412, type: 3}
+    density: 0.032
+  - name: stick1
+    prefab: {fileID: 5240602011275926751, guid: 9e1638cdd96522143a36771dee1e48c3, type: 3}
+    density: 0.028
+  - name: stick2
+    prefab: {fileID: 5240602011275926751, guid: ff77c6ed2aaee594e98134a1c35a7952, type: 3}
+    density: 0.02
+  - name: flower
+    prefab: {fileID: 5240602011275926751, guid: 9a4897e72adfc914eb60bb730702bdc0, type: 3}
+    density: 0.059
 --- !u!4 &1208595884
 Transform:
   m_ObjectHideFlags: 0
