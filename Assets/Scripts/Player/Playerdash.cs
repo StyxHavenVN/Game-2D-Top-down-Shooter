@@ -32,6 +32,9 @@ public class PlayerDash : MonoBehaviour
     [Tooltip("Màu nhân vật khi đang trong trạng thái miễn nhiễm")]
     public Color invincibleColor = new Color(1f, 1f, 1f, 0.4f);
 
+    [Tooltip("Kéo TrailRenderer vào đây (nếu muốn có vệt sáng khi lướt)")]
+    public TrailRenderer trailRenderer;
+
     [Header("UI Cooldown Dash (Tuỳ chọn)")]
     [Tooltip("Kéo Image cooldown của Dash vào đây (dùng Fill Amount)")]
     public Image dashCooldownImage;
@@ -71,6 +74,10 @@ public class PlayerDash : MonoBehaviour
 
         // Đảm bảo UI bắt đầu ở trạng thái đầy (sẵn sàng dash)
         UpdateCooldownUI(1f);
+
+        // Tắt trail lúc đầu
+        if (trailRenderer != null)
+            trailRenderer.emitting = false;
     }
 
     // =====================================================================
@@ -140,6 +147,15 @@ public class PlayerDash : MonoBehaviour
     // XỬ LÝ INPUT
     // =====================================================================
 
+    /// <summary>Được gọi tự động bởi PlayerInput (New Input System) khi action "Dash" được bấm.</summary>
+    void OnDash(InputValue value)
+    {
+        if (value.isPressed && !isDashing && canDash)
+        {
+            StartDash();
+        }
+    }
+
     /// <summary>Phát hiện phím SPACE hoặc Shift trái để kích hoạt dash.</summary>
     private void HandleDashInput()
     {
@@ -206,6 +222,10 @@ public class PlayerDash : MonoBehaviour
         if (dashReadyIcon != null)
             dashReadyIcon.SetActive(false);
 
+        // --- Bật hiệu ứng lướt (Trail) ---
+        if (trailRenderer != null)
+            trailRenderer.emitting = true;
+
         Debug.Log($"[Dash] Bắt đầu lướt về hướng: {dashDirection}");
     }
 
@@ -228,6 +248,10 @@ public class PlayerDash : MonoBehaviour
         // --- Khôi phục màu sprite gốc ---
         if (spriteRenderer != null)
             spriteRenderer.color = originalColor;
+
+        // --- Tắt hiệu ứng lướt (Trail) ---
+        if (trailRenderer != null)
+            trailRenderer.emitting = false;
 
         Debug.Log("[Dash] Kết thúc lướt. Bắt đầu hồi chiêu...");
     }
