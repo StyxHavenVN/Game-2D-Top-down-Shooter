@@ -1239,6 +1239,8 @@ GameObject:
   - component: {fileID: 917658878}
   - component: {fileID: 917658877}
   - component: {fileID: 917658886}
+  - component: {fileID: 917658887}
+  - component: {fileID: 917658888}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1573,6 +1575,41 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
+--- !u!114 &917658887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917658874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a5df0cf596402a4da22698c6755a79c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDash
+  dashSpeed: 10
+  dashDuration: 0.3
+  dashCooldown: 3
+  spriteRenderer: {fileID: 0}
+  invincibleColor: {r: 1, g: 1, b: 1, a: 0.4}
+  trailRenderer: {fileID: 0}
+  dashCooldownImage: {fileID: 0}
+  dashReadyIcon: {fileID: 0}
+--- !u!114 &917658888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917658874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08f7b0edab351544789327434af7e967, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DashGhost
+  ghostDelay: 0.05
+  destroyTime: 0.3
+  ghostColor: {r: 0.5, g: 0.8, b: 1, a: 0.6}
 --- !u!1 &923165480
 GameObject:
   m_ObjectHideFlags: 0
@@ -2946,6 +2983,7 @@ MonoBehaviour:
   player: {fileID: 917658874}
   healthBarUI: {fileID: 1153328936}
   expBarUI: {fileID: 1684817724}
+  killCounterUI: {fileID: 1477456614}
 --- !u!114 &1215424380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3007,7 +3045,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b79c486f727b92e45a51aa7194d0c0fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  bossPrefab: {fileID: 0}
+  bossPrefab: {fileID: 6123555906220488257, guid: 760dadedbaea6c743bffd9725cfe90f1, type: 3}
   minKillsToSpawnBoss: 5
   maxKillsToSpawnBoss: 10
   player: {fileID: 917658875}
@@ -5338,6 +5376,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2076817059}
   m_CullTransparentMesh: 1
+--- !u!1001 &932909431702109392
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 434951794592137207, guid: 760dadedbaea6c743bffd9725cfe90f1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434951794592137207, guid: 760dadedbaea6c743bffd9725cfe90f1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434951794592137207, guid: 760dadedbaea6c743bffd9725cfe90f1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434951794592137207, guid: 760dadedbaea6c743bffd9725cfe90f1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 434951794592137207, guid: 760dadedbaea6c743bffd9725cfe90f1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434951794592137207, guid: 760dadedbaea6c743bffd9725cfe90f1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434951794592137207, guid: 760dadedbaea6c743bffd9725cfe90f1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434951794592137207, guid: 760dadedbaea6c743bffd9725cfe90f1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434951794592137207, guid: 760dadedbaea6c743bffd9725cfe90f1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434951794592137207, guid: 760dadedbaea6c743bffd9725cfe90f1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6123555906220488257, guid: 760dadedbaea6c743bffd9725cfe90f1, type: 3}
+      propertyPath: m_Name
+      value: Boss
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 760dadedbaea6c743bffd9725cfe90f1, type: 3}
 --- !u!1001 &1748016066746334574
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5409,3 +5504,4 @@ SceneRoots:
   - {fileID: 1208595884}
   - {fileID: 1748016066746334574}
   - {fileID: 583303898}
+  - {fileID: 932909431702109392}
