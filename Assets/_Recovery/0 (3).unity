@@ -1221,6 +1221,9 @@ MonoBehaviour:
   spreadAngle: 45
   swordCooldown: 0.5
   swordRange: 1
+  pistolBaseDamage: 15
+  shotgunBaseDamage: 25
+  swordBaseDamage: 40
 --- !u!61 &917658882
 BoxCollider2D:
   m_ObjectHideFlags: 0

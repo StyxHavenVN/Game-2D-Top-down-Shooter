@@ -49,6 +49,14 @@ public class GameManager : MonoBehaviour
         if (player == null)
             player = GameObject.FindWithTag("Player")?.transform;
 
+        // Tự động tìm Boss Prefab nếu quên kéo thả
+        if (bossPrefab == null)
+        {
+            bossPrefab = Resources.Load<GameObject>("Prefabs/Boss") ?? 
+                         Resources.Load<GameObject>("Boss") ??
+                         GameObject.Find("Boss");
+        }
+
         // Roll ngẫu nhiên ngưỡng Boss ngay từ đầu game
         killThreshold = Random.Range(minKillsToSpawnBoss, maxKillsToSpawnBoss + 1);
 
@@ -102,7 +110,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("[GameManager] Chưa gán bossPrefab hoặc player!");
+            Debug.LogError($"[GameManager] Không thể spawn Boss! bossPrefab: {(bossPrefab != null ? "OK" : "null")}, player: {(player != null ? "OK" : "null")}");
         }
 
         // Cập nhật UI: đổi text thành "BOSS!" 

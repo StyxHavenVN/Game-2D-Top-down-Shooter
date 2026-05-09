@@ -13,6 +13,7 @@ public class MainMenuManager : MonoBehaviour
     public GameObject player;
     public GameObject healthBarUI; // MỚI THÊM: Cổng kết nối với thanh máu
     public GameObject expBarUI;
+    public GameObject killText;
 
     public enum WeaponType { Pistol, Shotgun, Sword, None }
     public static WeaponType selectedWeapon = WeaponType.None;
@@ -22,7 +23,9 @@ public class MainMenuManager : MonoBehaviour
         // Pause time and show menu on start
         Time.timeScale = 0f;
         mainMenuPanel.SetActive(true);
+        killText.SetActive(false);
         player.SetActive(false);
+
 
         if (healthBarUI != null) healthBarUI.SetActive(false);
         if (expBarUI != null) expBarUI.SetActive(false);
