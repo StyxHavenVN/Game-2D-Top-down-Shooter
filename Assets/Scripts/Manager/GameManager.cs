@@ -14,8 +14,8 @@ public class GameManager : MonoBehaviour
     // ── Cài đặt Boss ───────────────────────────────────────────
     [Header("Cài đặt Boss")]
     public GameObject bossPrefab;          // Kéo Boss Prefab vào đây
-    public int minKillsToSpawnBoss = 100;  // Ngưỡng tối thiểu
-    public int maxKillsToSpawnBoss = 200;  // Ngưỡng tối đa
+    public int minKillsToSpawnBoss = 20;  // Ngưỡng tối thiểu
+    public int maxKillsToSpawnBoss = 20;  // Ngưỡng tối đa
     public Transform player;               // Kéo Player vào đây
 
     // ── UI Kill Counter ────────────────────────────────────────
