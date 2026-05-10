@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public GameObject enemyPrefab; // Chứa con quái mẫu
+    [Header("Danh sách các loại quái")]
+    public GameObject[] enemyPrefabs; // Chứa mảng các con quái mẫu (Gắn BasicEnemy và RangedEnemy vào đây)
     public Transform player;       // Chứa vị trí người chơi
 
     public float spawnRate = 3f;   // Cứ 3 giây đẻ 1 con
@@ -42,15 +43,18 @@ public class EnemySpawner : MonoBehaviour
         Vector2 randomDirection = Random.insideUnitCircle.normalized;
         Vector2 spawnPosition = (Vector2)player.position + (randomDirection * 8f);
 
+        // Chọn ngẫu nhiên 1 loại quái trong danh sách
+        GameObject prefabToSpawn = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
+
         // Sinh ra con quái
-        GameObject newEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+        GameObject newEnemy = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
 
         // Cường hóa con quái vừa sinh ra dựa theo hệ số độ khó hiện tại
         EnemyHealth enemyHealth = newEnemy.GetComponent<EnemyHealth>();
         if (enemyHealth != null)
         {
-            // Nhân máu gốc (100) với độ khó. Ví dụ hệ số 1.5 thì quái sẽ có 150 máu.
-            enemyHealth.maxHealth = Mathf.RoundToInt(enemyHealth.maxHealth * difficultyMultiplier);
+            // Nhân máu gốc với độ khó. Ví dụ hệ số 1.5 thì quái sẽ có 150 máu.
+            enemyHealth.maxHealth = enemyHealth.maxHealth * difficultyMultiplier;
 
             // Đổi tên nó một chút cho ngầu để bạn dễ theo dõi ở Console
             newEnemy.name = "Enemy Lv." + (difficultyMultiplier * 10).ToString("0");
