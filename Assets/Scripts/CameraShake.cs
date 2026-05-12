@@ -11,10 +11,10 @@ public class CameraShake : MonoBehaviour
 
     [Header("Cài đặt mặc định")]
     [Tooltip("Cường độ rung mặc định (pixel)")]
-    public float defaultIntensity = 0.15f;
+    public float defaultIntensity = 0.05f;
 
     [Tooltip("Thời gian rung mặc định (giây)")]
-    public float defaultDuration = 0.1f;
+    public float defaultDuration = 0.05f;
 
     private Vector3 originalPosition;
     private Coroutine shakeCoroutine;
