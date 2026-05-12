@@ -16,6 +16,12 @@ public class EnemyHealth : MonoBehaviour
     [Tooltip("Kéo Prefab ExpOrb vào đây")]
     public GameObject expOrbPrefab;
 
+    [Header("Đẩy Lùi (Knockback)")]
+    [Tooltip("Lực đẩy lùi khi trúng đạn")]
+    public float knockbackForce = 5f;
+
+    private Rigidbody2D rb;
+
     void Awake()
     {
         // Khởi tạo máu gốc từ thẻ Data (ScriptableObject)
@@ -23,6 +29,7 @@ public class EnemyHealth : MonoBehaviour
         {
             maxHealth = enemyData.maxHP;
         }
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Start()
@@ -48,20 +55,42 @@ public class EnemyHealth : MonoBehaviour
     void OnEnable()
     {
         // Mỗi lần quái được bật lên (lấy ra từ Pool), reset máu
-        // Chú ý: maxHealth có thể bị EnemySpawner ghi đè sau OnEnable, 
-        // nên EnemySpawner sẽ gọi ResetHealth() thêm 1 lần nữa.
         currentHealth = maxHealth;
         isBurning = false;
     }
 
-    // Nhận sát thương
+    // Nhận sát thương (không có knockback — dùng cho Burn, AoE, v.v.)
     public void TakeDamage(float damage)
+    {
+        TakeDamage(damage, Vector2.zero);
+    }
+
+    /// <summary>
+    /// Nhận sát thương VỚI lực đẩy lùi (Knockback).
+    /// hitDirection = hướng viên đạn bay tới (từ đạn → quái).
+    /// </summary>
+    public void TakeDamage(float damage, Vector2 hitDirection)
     {
         currentHealth -= damage;
         UpdateHealthBar();
 
         // Hiển thị Popup Sát thương
         DamagePopup.Create(transform.position, (int)damage);
+
+        // ⚡ FLASH TRẮNG khi trúng đạn
+        EnemyFlash flash = GetComponent<EnemyFlash>();
+        if (flash != null)
+            flash.Flash();
+
+        // 📸 Rung camera nhẹ khi quái trúng đạn
+        if (CameraShake.Instance != null)
+            CameraShake.Instance.Shake(0.05f, 0.05f);
+
+        // 💥 ĐẨY LÙI QUÁI theo hướng viên đạn bay tới
+        if (rb != null && hitDirection != Vector2.zero)
+        {
+            rb.AddForce(hitDirection.normalized * knockbackForce, ForceMode2D.Impulse);
+        }
 
         // Phát âm thanh khi quái bị trúng đòn
         if (AudioManager.Instance != null)

@@ -25,13 +25,14 @@ public class MapGenerator : MonoBehaviour
     public TileBase[] grassDetails;
     [Range(0f, 1f)] public float grassDensity = 0.2f;
 
+    // --- PHẦN NÂNG CẤP: DANH SÁCH VẬT CẢN ĐA DẠNG ---
     [System.Serializable]
     public class ObstacleData
     {
-        public string name;         
-        public GameObject prefab;   
+        public string name;           // Tên gợi nhớ (ví dụ: Cây thông, Đá cuội)
+        public GameObject prefab;     // Prefab của vật thể
         [Range(0f, 0.2f)]
-        public float density = 0.05f; 
+        public float density = 0.05f; // Tỷ lệ mọc riêng của loại này
     }
 
     [Header("Cài đặt Vật cản (Đa dạng)")]
@@ -112,12 +113,14 @@ public class MapGenerator : MonoBehaviour
 
                 if (tileToSet == grassTile)
                 {
+                    // 1. Trồng cỏ trang trí (Tile)
                     if (Random.value < grassDensity && grassDetails != null && grassDetails.Length > 0)
                     {
                         TileBase randomGrass = grassDetails[Random.Range(0, grassDetails.Length)];
                         detailTilemap.SetTile(tilePosition, randomGrass);
                     }
 
+                    // 2. PHẦN NÂNG CẤP: Duyệt danh sách vật cản để spawn
                     SpawnObstacles(tilePosition);
                 }
             }
@@ -126,6 +129,7 @@ public class MapGenerator : MonoBehaviour
 
     void SpawnObstacles(Vector3Int tilePosition)
     {
+        // 1. Quay số 1 lần duy nhất cho mỗi ô gạch
         float roll = Random.value;
         float cumulativeDensity = 0;
 
@@ -133,18 +137,24 @@ public class MapGenerator : MonoBehaviour
         {
             cumulativeDensity += obs.density;
 
+            // Nếu con số may mắn nằm trong vùng tỷ lệ của vật thể này
             if (roll < cumulativeDensity)
             {
                 if (obs.prefab == null) break;
 
                 Vector3 worldPos = groundTilemap.GetCellCenterWorld(tilePosition);
 
+                // 2. KIỂM TRA RADAR (Sửa lỗi chồng lấn)
+                // Quét một vòng tròn bán kính 0.8 đơn vị quanh vị trí định mọc
+                // Lưu ý: Các Prefab cây/đá của bạn PHẢI CÓ Collider 2D thì radar mới thấy nhé
                 Collider2D hit = Physics2D.OverlapCircle(worldPos, 0.8f);
 
-                if (hit == null)
+                if (hit == null) // Nếu vùng này hoàn toàn trống trải
                 {
                     Instantiate(obs.prefab, worldPos, Quaternion.identity, treeContainer);
                 }
+
+                // Đã xử lý xong ô này (Dù mọc được hay bị vướng radar cũng dừng lại)
                 break;
             }
         }

@@ -45,5 +45,9 @@ public class ShotgunWeapon : WeaponBase
 
         // Phát âm thanh 1 lần cho cả chùm đạn
         if (audioManager != null) audioManager.PlayShotgunShoot();
+
+        // Rung camera MẠNH khi bắn shotgun (cảm giác "đùng" rất đã)
+        if (CameraShake.Instance != null)
+            CameraShake.Instance.Shake(0.25f, 0.15f);
     }
 }

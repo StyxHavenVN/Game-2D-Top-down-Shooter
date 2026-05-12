@@ -37,6 +37,14 @@ public class Health : MonoBehaviour
 
         currentHealth -= damage;
 
+        // 🔴 CHỚP ĐỎ MÀN HÌNH khi bị đánh (tạo cảm giác nguy hiểm!)
+        if (DamageVignette.Instance != null)
+            DamageVignette.Instance.Flash();
+
+        // 📸 RUNG CAMERA MẠNH khi Player bị đánh (đau hơn quái trúng đạn)
+        if (CameraShake.Instance != null)
+            CameraShake.Instance.Shake(0.2f, 0.15f);
+
         if (currentHealth <= 0)
         {
             currentHealth = 0;

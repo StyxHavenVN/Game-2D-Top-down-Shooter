@@ -32,5 +32,9 @@ public class SwordWeapon : WeaponBase
 
         // Phát âm thanh chém
         if (audioManager != null) audioManager.PlaySwordSlash();
+
+        // Rung camera vừa khi chém kiếm
+        if (CameraShake.Instance != null)
+            CameraShake.Instance.Shake(0.18f, 0.12f);
     }
 }

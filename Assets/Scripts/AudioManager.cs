@@ -94,12 +94,4 @@ public class AudioManager : MonoBehaviour
         if (sfxSource != null && levelUpClip != null)
             sfxSource.PlayOneShot(levelUpClip);
     }
-
-    public void PlayEnergySound()
-    {
-        if (energyClip != null && effectAudioSource != null)
-        {
-            effectAudioSource.PlayOneShot(energyClip);
-        }
-    }
 }
