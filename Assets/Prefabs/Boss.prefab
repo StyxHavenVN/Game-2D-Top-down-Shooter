@@ -236,7 +236,6 @@ MonoBehaviour:
   maxHealth: 500
   healthFill: {fileID: 0}
   expOrbPrefab: {fileID: 0}
-  knockbackForce: 5
 --- !u!114 &-2732776528335961703
 MonoBehaviour:
   m_ObjectHideFlags: 0

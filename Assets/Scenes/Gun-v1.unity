@@ -3302,6 +3302,7 @@ MonoBehaviour:
   enemyPrefabs:
   - {fileID: 7284578795452900971, guid: acea0d531026e474d8e3c217eafde7aa, type: 3}
   - {fileID: 9054305702208296287, guid: c87ebe2c0c838c841b1ac44a8083823b, type: 3}
+  - {fileID: 9182070101832316858, guid: ef7ec7c113915d647a6f7e424e9b3dc4, type: 3}
   player: {fileID: 917658875}
   spawnRate: 3
   difficultyMultiplier: 1
@@ -3950,8 +3951,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5efe207c057afc4b9e98e064d5bf44d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraShake
-  defaultIntensity: 0.15
-  defaultDuration: 0.1
+  defaultIntensity: 0.05
+  defaultDuration: 0.05
 --- !u!1 &1417308573
 GameObject:
   m_ObjectHideFlags: 0
@@ -4358,7 +4359,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000061035156, y: 0}
+  m_AnchoredPosition: {x: -0.000061035, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1609864160
@@ -4374,7 +4375,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 0.47058824}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

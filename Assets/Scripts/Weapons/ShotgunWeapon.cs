@@ -48,6 +48,6 @@ public class ShotgunWeapon : WeaponBase
 
         // Rung camera MẠNH khi bắn shotgun (cảm giác "đùng" rất đã)
         if (CameraShake.Instance != null)
-            CameraShake.Instance.Shake(0.25f, 0.15f);
+            CameraShake.Instance.Shake(0.1f, 0.1f);
     }
 }

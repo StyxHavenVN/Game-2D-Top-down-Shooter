@@ -71,6 +71,12 @@ public class ObjectPool : MonoBehaviour
     /// </summary>
     public GameObject GetBullet(Vector3 position, Quaternion rotation)
     {
+        if (bulletPrefab == null)
+        {
+            Debug.LogError("[ObjectPool] Lỗi: Chưa cấu hình bulletPrefab trong ObjectPool!");
+            return null;
+        }
+
         GameObject bullet;
 
         if (bulletPool.Count > 0)
@@ -151,6 +157,12 @@ public class ObjectPool : MonoBehaviour
     /// </summary>
     public GameObject GetEnemy(GameObject prefab, Vector3 position)
     {
+        if (prefab == null)
+        {
+            Debug.LogError("[ObjectPool] Lỗi: Cố gắng lấy quái với prefab bị NULL!");
+            return null;
+        }
+
         string key = prefab.name;
         GameObject enemy;
 
