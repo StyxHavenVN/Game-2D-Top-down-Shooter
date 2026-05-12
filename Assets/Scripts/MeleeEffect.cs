@@ -5,6 +5,10 @@ public class MeleeEffect : MonoBehaviour
     public int damage = 20; // Sát thương của nhát chém
     public float lifetime = 0.15f; // Thời gian tồn tại cực ngắn (ví dụ: một cái chớp mắt)
 
+    [Header("Hiệu ứng Lifesteal")]
+    public float lifestealPercent = 0f;
+    public Health ownerHealth;
+
     void Start()
     {
         // Tự động xóa GameObject này đi sau 'lifetime' giây
@@ -24,6 +28,18 @@ public class MeleeEffect : MonoBehaviour
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
+
+                // Nếu có hiệu ứng Lifesteal (Hút máu)
+                if (lifestealPercent > 0 && ownerHealth != null)
+                {
+                    int healAmount = Mathf.RoundToInt(damage * lifestealPercent);
+                    if (healAmount > 0)
+                    {
+                        ownerHealth.Heal(healAmount);
+                        // Tùy chọn: Hiện Popup hồi máu màu xanh lá ở người chơi
+                        DamagePopup.Create(ownerHealth.transform.position, healAmount, true);
+                    }
+                }
             }
 
             // Thêm dòng này để test xem đã chém trúng chưa
