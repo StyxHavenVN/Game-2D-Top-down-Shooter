@@ -37,7 +37,7 @@ public class BossController : MonoBehaviour
         if (enemyData != null)
         {
             moveSpeed = enemyData.moveSpeed;
-            stateCooldown = enemyData.attackCooldown; // Dùng attackCooldown làm thời gian nghỉ giữa các chiêu
+            stateCooldown = enemyData.attackCooldown;
             bulletForce = enemyData.bulletSpeed;
             damage = enemyData.damage;
         }
@@ -120,7 +120,6 @@ public class BossController : MonoBehaviour
         yield return new WaitForSeconds(0.5f); 
     }
     
-    // Boss chạm vào người chơi gây sát thương
     void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.name == "Player")

@@ -9,8 +9,7 @@ public class EnemyFollow : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector2 movement;
-    
-    // Chỉ số nội tại (đọc từ Data)
+   
     private float moveSpeed = 3f;
     private float damage = 1f;
 
@@ -54,7 +53,7 @@ public class EnemyFollow : MonoBehaviour
             Health playerHealth = collision.gameObject.GetComponent<Health>();
             if (playerHealth != null)
             {
-                playerHealth.TakeDamage(Mathf.RoundToInt(damage)); // Gây sát thương dựa trên thông số Data
+                playerHealth.TakeDamage(Mathf.RoundToInt(damage)); 
             }
         }
     }
