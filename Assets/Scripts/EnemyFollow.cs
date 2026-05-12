@@ -2,32 +2,26 @@ using UnityEngine;
 
 public class EnemyFollow : MonoBehaviour
 {
-    [Header("Dữ liệu Quái Cận Chiến (Kéo EnemyData vào)")]
-    public EnemyData enemyData;
-
-    public Transform player;
+    [Header("Chỉ số cơ bản")]
+    public Transform player; 
+    public float moveSpeed = 3f;
+    public float damage = 1f;
 
     private Rigidbody2D rb;
     private Vector2 movement;
-   
-    private float moveSpeed = 3f;
-    private float damage = 1f;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        
-        // Đọc thông số từ thẻ Data
-        if (enemyData != null)
-        {
-            moveSpeed = enemyData.moveSpeed;
-            damage = enemyData.damage;
-        }
+
 
         if (player == null)
         {
-            GameObject pObj = GameObject.Find("Player");
-            if (pObj != null) player = pObj.transform;
+            GameObject playerObj = GameObject.Find("Player");
+            if (playerObj != null)
+            {
+                player = playerObj.transform;
+            }
         }
     }
 
@@ -45,7 +39,7 @@ public class EnemyFollow : MonoBehaviour
     {
         rb.MovePosition((Vector2)transform.position + (movement * moveSpeed * Time.fixedDeltaTime));
     }
-    
+
     void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.name == "Player")
@@ -53,7 +47,7 @@ public class EnemyFollow : MonoBehaviour
             Health playerHealth = collision.gameObject.GetComponent<Health>();
             if (playerHealth != null)
             {
-                playerHealth.TakeDamage(Mathf.RoundToInt(damage)); 
+                playerHealth.TakeDamage(Mathf.RoundToInt(damage));
             }
         }
     }
