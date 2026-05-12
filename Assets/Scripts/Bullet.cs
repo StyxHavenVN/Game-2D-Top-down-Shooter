@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class BulletDamage : MonoBehaviour
 {
-    public int damage = 15; // Sát thương của viên đạn
-    public float lifetime = 3f; // Tự hủy viên đạn sau 3 giây bay nếu không trúng ai để tránh nặng máy
+    public int damage = 15; 
+    public float lifetime = 3f; 
     public GameObject bloodPrefabs;
 
     void Start()
@@ -13,7 +13,6 @@ public class BulletDamage : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // Phải kiểm tra xem có trúng "Enemy" không đã
         if (other.CompareTag("Enemy"))
         {
             EnemyHealth enemy = other.GetComponent<EnemyHealth>();

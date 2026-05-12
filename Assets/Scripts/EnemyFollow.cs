@@ -7,10 +7,24 @@ public class EnemyFollow : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector2 movement;
+<<<<<<< Updated upstream
+=======
+   
+    private float moveSpeed = 3f;
+    private float damage = 1f;
+>>>>>>> Stashed changes
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+<<<<<<< Updated upstream
+=======
+        if (enemyData != null)
+        {
+            moveSpeed = enemyData.moveSpeed;
+            damage = enemyData.damage;
+        }
+>>>>>>> Stashed changes
 
         // Dòng code tiện lợi: Tự động tìm nhân vật tên "Player" trên màn hình nếu bạn quên kéo thả
         if (player == null)
@@ -44,7 +58,11 @@ public class EnemyFollow : MonoBehaviour
             Health playerHealth = collision.gameObject.GetComponent<Health>();
             if (playerHealth != null)
             {
+<<<<<<< Updated upstream
                 playerHealth.TakeDamage(1); // Mỗi khung hình chạm vào mất 1 máu
+=======
+                playerHealth.TakeDamage(Mathf.RoundToInt(damage)); 
+>>>>>>> Stashed changes
             }
         }
     }

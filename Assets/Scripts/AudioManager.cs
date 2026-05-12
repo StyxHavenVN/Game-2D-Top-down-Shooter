@@ -2,20 +2,50 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-    private AudioSource effectAudioSource;
-    private AudioClip shootClip;
-    private AudioClip reloadClip;
-    private AudioClip energyClip;
-    private void PlayShootSound()
+    public static AudioManager Instance;
+
+    [Header("Thiết lập Nguồn phát")]
+    public AudioSource effectAudioSource;
+
+    [Header("Các File Âm Thanh")]
+    public AudioClip shootClip;
+    public AudioClip reloadClip;
+    public AudioClip energyClip;
+
+    private void Awake()
     {
-        effectAudioSource.PlayOneShot(shootClip);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
-    private void PlayreloadSound()
+
+    public void PlayShootSound()
     {
-        effectAudioSource.PlayOneShot(reloadClip);
+        if (shootClip != null && effectAudioSource != null)
+        {
+            effectAudioSource.PlayOneShot(shootClip);
+        }
     }
-    private void PlayenergySound()
+
+    public void PlayReloadSound()
     {
-        effectAudioSource.PlayOneShot(energyClip);
+        if (reloadClip != null && effectAudioSource != null)
+        {
+            effectAudioSource.PlayOneShot(reloadClip);
+        }
+    }
+
+    public void PlayEnergySound()
+    {
+        if (energyClip != null && effectAudioSource != null)
+        {
+            effectAudioSource.PlayOneShot(energyClip);
+        }
     }
 }
