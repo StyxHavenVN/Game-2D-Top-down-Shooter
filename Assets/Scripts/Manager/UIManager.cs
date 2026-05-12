@@ -70,7 +70,7 @@ public class UIManager : MonoBehaviour
         if (killCountText != null)
         {
             if (isBossSpawned)
-                killCountText.text = "⚠ BOSS!";
+                killCountText.text = "BOSS!";
             else
                 killCountText.text = $"Kills: {currentKills} / {killThreshold}";
         }

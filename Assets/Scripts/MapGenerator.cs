@@ -25,28 +25,46 @@ public class MapGenerator : MonoBehaviour
     public TileBase[] grassDetails;
     [Range(0f, 1f)] public float grassDensity = 0.2f;
 
-    // --- PHẦN NÂNG CẤP: DANH SÁCH VẬT CẢN ĐA DẠNG ---
     [System.Serializable]
     public class ObstacleData
     {
-        public string name;           // Tên gợi nhớ (ví dụ: Cây thông, Đá cuội)
-        public GameObject prefab;     // Prefab của vật thể
+        public string name;
+        public GameObject prefab;
         [Range(0f, 0.2f)]
-        public float density = 0.05f; // Tỷ lệ mọc riêng của loại này
+        public float density = 0.05f;
     }
 
     [Header("Cài đặt Vật cản (Đa dạng)")]
     public List<ObstacleData> obstacleList = new List<ObstacleData>();
     private Transform treeContainer;
 
+    // --- CÀI ĐẶT ÁNH SÁNG (GLOOM/BLOOM) ---
+    [Header("Cài đặt Ánh sáng Nắng")]
+    public GameObject sunSpotPrefab;
+    public float lightScale = 20f; // Kích thước của "đám mây/vùng nắng"
+    [Range(0f, 1f)] public float lightThreshold = 0.7f; // Ngưỡng tạo nắng (càng cao nắng càng ít)
+    [Range(0f, 1f)] public float lightSpawnChance = 0.15f; // Xác suất rơi vệt nắng trong vùng sáng (tránh lag)
+
+    private float lightOffsetX;
+    private float lightOffsetY;
+    private Transform lightContainer;
+    // ---------------------------------------
+
     private Dictionary<Vector2Int, bool> generatedChunks = new Dictionary<Vector2Int, bool>();
     private Vector2Int currentPlayerChunk;
 
     void Start()
     {
+        // Random offset cho địa hình
         offsetX = Random.Range(-9999f, 9999f);
         offsetY = Random.Range(-9999f, 9999f);
         treeContainer = new GameObject("TreeContainer").transform;
+
+        // Random offset cho ánh sáng (để nắng không trùng khớp hoàn toàn với hình dáng đất)
+        lightOffsetX = Random.Range(-9999f, 9999f);
+        lightOffsetY = Random.Range(-9999f, 9999f);
+        lightContainer = new GameObject("SunSpotContainer").transform;
+
         currentPlayerChunk = GetChunkPosition(player.position);
         UpdateChunks();
     }
@@ -113,15 +131,31 @@ public class MapGenerator : MonoBehaviour
 
                 if (tileToSet == grassTile)
                 {
-                    // 1. Trồng cỏ trang trí (Tile)
+                    // 1. Trồng cỏ trang trí
                     if (Random.value < grassDensity && grassDetails != null && grassDetails.Length > 0)
                     {
                         TileBase randomGrass = grassDetails[Random.Range(0, grassDetails.Length)];
                         detailTilemap.SetTile(tilePosition, randomGrass);
                     }
 
-                    // 2. PHẦN NÂNG CẤP: Duyệt danh sách vật cản để spawn
+                    // 2. Trồng cây/đá
                     SpawnObstacles(tilePosition);
+
+                    // 3. SINH VỆT NẮNG (GLOOM/BLOOM)
+                    if (sunSpotPrefab != null)
+                    {
+                        // Tính toán độ sáng của khu vực này bằng lớp Noise thứ 2
+                        float lightNoiseCoordX = (float)tileX / lightScale + lightOffsetX;
+                        float lightNoiseCoordY = (float)tileY / lightScale + lightOffsetY;
+                        float lightNoise = Mathf.PerlinNoise(lightNoiseCoordX, lightNoiseCoordY);
+
+                        // Nếu nằm trong "Vùng có nắng" và trúng xác suất sinh đèn
+                        if (lightNoise > lightThreshold && Random.value < lightSpawnChance)
+                        {
+                            Vector3 worldPos = groundTilemap.GetCellCenterWorld(tilePosition);
+                            Instantiate(sunSpotPrefab, worldPos, Quaternion.identity, lightContainer);
+                        }
+                    }
                 }
             }
         }
@@ -129,32 +163,23 @@ public class MapGenerator : MonoBehaviour
 
     void SpawnObstacles(Vector3Int tilePosition)
     {
-        // 1. Quay số 1 lần duy nhất cho mỗi ô gạch
         float roll = Random.value;
         float cumulativeDensity = 0;
 
         foreach (ObstacleData obs in obstacleList)
         {
             cumulativeDensity += obs.density;
-
-            // Nếu con số may mắn nằm trong vùng tỷ lệ của vật thể này
             if (roll < cumulativeDensity)
             {
                 if (obs.prefab == null) break;
 
                 Vector3 worldPos = groundTilemap.GetCellCenterWorld(tilePosition);
-
-                // 2. KIỂM TRA RADAR (Sửa lỗi chồng lấn)
-                // Quét một vòng tròn bán kính 0.8 đơn vị quanh vị trí định mọc
-                // Lưu ý: Các Prefab cây/đá của bạn PHẢI CÓ Collider 2D thì radar mới thấy nhé
                 Collider2D hit = Physics2D.OverlapCircle(worldPos, 0.8f);
 
-                if (hit == null) // Nếu vùng này hoàn toàn trống trải
+                if (hit == null)
                 {
                     Instantiate(obs.prefab, worldPos, Quaternion.identity, treeContainer);
                 }
-
-                // Đã xử lý xong ô này (Dù mọc được hay bị vướng radar cũng dừng lại)
                 break;
             }
         }

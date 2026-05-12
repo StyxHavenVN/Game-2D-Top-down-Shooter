@@ -69,10 +69,15 @@ public class PlayerStats : MonoBehaviour
         {
             playerHealth.maxHealth += amount;
             playerHealth.currentHealth += amount;
+
+            if (playerHealth.currentHealth > playerHealth.maxHealth)
+            {
+                playerHealth.currentHealth = playerHealth.maxHealth;
+            }
+
+            playerHealth.UpdateHealthUI();
         }
     }
-
-    // THÊM MỚI: Hàm chuyên xử lý việc hiển thị thông qua UIManager
     void UpdateExpUI()
     {
         if (UIManager.Instance != null)

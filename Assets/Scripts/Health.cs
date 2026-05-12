@@ -73,7 +73,7 @@ public class Health : MonoBehaviour
     public bool IsInvincible() => isInvincible;
 
     // Cập nhật giao diện thanh máu qua UIManager
-    private void UpdateHealthUI()
+    public void UpdateHealthUI()
     {
         if (UIManager.Instance != null)
         {
