@@ -37,6 +37,9 @@ public class EnemyHealth : MonoBehaviour
         currentHealth -= damage;
         UpdateHealthBar();
 
+        // Hiển thị Popup Sát thương
+        DamagePopup.Create(transform.position, (int)damage);
+
         if (currentHealth <= 0)
             Die();
     }
@@ -60,5 +63,38 @@ public class EnemyHealth : MonoBehaviour
             GameManager.Instance.RegisterKill();
 
         Destroy(gameObject);
+    }
+
+    // --- HIỆU ỨNG BURN ---
+    private bool isBurning = false;
+    private float burnDamagePerSec;
+    private float burnDuration;
+
+    public void ApplyBurn(float dps, float duration)
+    {
+        isBurning = true;
+        burnDamagePerSec = dps;
+        burnDuration = duration;
+    }
+
+    void Update()
+    {
+        // Xử lý logic đốt cháy theo thời gian
+        if (isBurning)
+        {
+            burnDuration -= Time.deltaTime;
+            // Gọi trừ máu trực tiếp không dùng UpdateHealthBar liên tục để tránh spam hiệu ứng nếu có
+            currentHealth -= burnDamagePerSec * Time.deltaTime;
+            UpdateHealthBar();
+
+            // Hiển thị Popup sát thương Burn mỗi giây (dùng mẹo random để khỏi hiển thị liên tục mỗi frame)
+            if (Random.Range(0, 100) < 5) // Tỉ lệ hiện popup rất nhỏ mỗi frame
+            {
+                DamagePopup.Create(transform.position, Mathf.CeilToInt(burnDamagePerSec));
+            }
+
+            if (currentHealth <= 0) Die();
+            if (burnDuration <= 0) isBurning = false;
+        }
     }
 }

@@ -6,6 +6,10 @@ public class BulletDamage : MonoBehaviour
     public float lifetime = 3f; // Tự hủy viên đạn sau 3 giây bay nếu không trúng ai để tránh nặng máy
     public GameObject bloodPrefabs;
 
+    [Header("Hiệu ứng Đặc biệt")]
+    public bool isPierce = false;
+    public bool isBurn = false;
+
     void Start()
     {
         Destroy(gameObject, lifetime);
@@ -20,10 +24,22 @@ public class BulletDamage : MonoBehaviour
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
+
+                // Nếu có hiệu ứng Burn, đốt cháy quái
+                if (isBurn)
+                {
+                    enemy.ApplyBurn(damage * 0.05f, 5f); // Đốt 5% sát thương mỗi giây, kéo dài 5s
+                }
+
                 GameObject blood = Instantiate(bloodPrefabs, transform.position, Quaternion.identity);
                 Destroy(blood, 1f);
             }
-            Destroy(gameObject);
+            
+            // Nếu không có hiệu ứng Xuyên thấu (Pierce) thì hủy viên đạn
+            if (!isPierce)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

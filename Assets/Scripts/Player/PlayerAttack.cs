@@ -75,6 +75,14 @@ public class PlayerAttack : MonoBehaviour
         GameObject bullet = Instantiate(pistolBulletPrefab, transform.position, Quaternion.Euler(0, 0, angle));
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         rb.AddForce(dir.normalized * pistolForce, ForceMode2D.Impulse);
+
+        // Kích hoạt hiệu ứng Pierce (Xuyên thấu) nếu có Item
+        BulletDamage bd = bullet.GetComponent<BulletDamage>();
+        InventoryManager inv = GetComponent<InventoryManager>();
+        if (bd != null && inv != null)
+        {
+            bd.isPierce = inv.hasPierce;
+        }
     }
 
     void ShootShotgun(Vector2 dir, float baseAngle)
@@ -94,6 +102,14 @@ public class PlayerAttack : MonoBehaviour
 
             Rigidbody2D rb = pellet.GetComponent<Rigidbody2D>();
             rb.AddForce(pelletDir.normalized * shotgunForce, ForceMode2D.Impulse);
+
+            // Kích hoạt hiệu ứng Burn (Đốt cháy) nếu có Item
+            BulletDamage bd = pellet.GetComponent<BulletDamage>();
+            InventoryManager inv = GetComponent<InventoryManager>();
+            if (bd != null && inv != null)
+            {
+                bd.isBurn = inv.hasBurn;
+            }
         }
     }
 
@@ -104,6 +120,15 @@ public class PlayerAttack : MonoBehaviour
 
         // Tạo ra nhát chém
         GameObject slash = Instantiate(swordSlashPrefab, spawnPos, Quaternion.Euler(0, 0, angle));
+
+        // Kích hoạt hiệu ứng Lifesteal (Hút máu) nếu có Item
+        MeleeEffect melee = slash.GetComponent<MeleeEffect>();
+        InventoryManager inv = GetComponent<InventoryManager>();
+        if (melee != null && inv != null)
+        {
+            melee.lifestealPercent = inv.lifestealPercent;
+            melee.ownerHealth = GetComponent<Health>(); // Truyền Health của Player vào để gọi hàm Heal
+        }
 
         // MẸO: Bạn có thể đẩy nhẹ nhân vật lên phía trước một chút mỗi khi vung kiếm để tạo "lực"
         // GetComponent<Rigidbody2D>().AddForce(dir.normalized * 3f, ForceMode2D.Impulse); 
