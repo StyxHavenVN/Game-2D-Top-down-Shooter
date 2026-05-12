@@ -47,12 +47,20 @@ public class BulletDamage : MonoBehaviour
             EnemyHealth enemy = other.GetComponent<EnemyHealth>();
             if (enemy != null)
             {
-                enemy.TakeDamage(damage);
+                // 💥 Tính hướng bay của đạn để đẩy lùi quái (Knockback)
+                Rigidbody2D bulletRb = GetComponent<Rigidbody2D>();
+                Vector2 knockbackDir = Vector2.zero;
+                if (bulletRb != null && bulletRb.linearVelocity.sqrMagnitude > 0.01f)
+                {
+                    knockbackDir = bulletRb.linearVelocity.normalized;
+                }
+
+                enemy.TakeDamage(damage, knockbackDir);
 
                 // Nếu có hiệu ứng Burn, đốt cháy quái
                 if (isBurn)
                 {
-                    enemy.ApplyBurn(damage * 0.05f, 5f); // Đốt 5% sát thương mỗi giây, kéo dài 5s
+                    enemy.ApplyBurn(damage * 0.05f, 5f);
                 }
 
                 // Hiệu ứng máu

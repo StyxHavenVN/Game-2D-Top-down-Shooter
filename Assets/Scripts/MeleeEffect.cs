@@ -27,7 +27,9 @@ public class MeleeEffect : MonoBehaviour
             EnemyHealth enemy = other.GetComponent<EnemyHealth>();
             if (enemy != null)
             {
-                enemy.TakeDamage(damage);
+                // 💥 Tính hướng đẩy lùi (từ vị trí nhát chém → quái)
+                Vector2 knockbackDir = (other.transform.position - transform.position).normalized;
+                enemy.TakeDamage(damage, knockbackDir);
 
                 // Nếu có hiệu ứng Lifesteal (Hút máu)
                 if (lifestealPercent > 0 && ownerHealth != null)

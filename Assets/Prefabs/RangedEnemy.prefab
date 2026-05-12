@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 3955358852682746647}
   - component: {fileID: 292348290840055490}
   - component: {fileID: 3335244786781560603}
+  - component: {fileID: -4711227908775392299}
   m_Layer: 0
   m_Name: RangedEnemy
   m_TagString: Enemy
@@ -235,9 +236,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4235ab1f6bfebb7459178f897f2d4921, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  enemyData: {fileID: 0}
   maxHealth: 50
   healthFill: {fileID: 0}
-  expReward: 10
   expOrbPrefab: {fileID: 7117957361752824279, guid: b0e668b8d95534143aee3e74ce848871, type: 3}
 --- !u!114 &3335244786781560603
 MonoBehaviour:
@@ -251,11 +252,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa1a7adcfe043df4eb0eb64d8c1e0b57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
+  enemyData: {fileID: 0}
   currentState: 0
-  moveSpeed: 2
-  stoppingDistance: 5
-  retreatDistance: 3
   enemyBulletPrefab: {fileID: 2489217031305568967, guid: 58037412ba1c7be4597a2206bbd149b1, type: 3}
-  fireRate: 1.5
-  bulletForce: 10
   firePoint: {fileID: 7627375212789519679}
+--- !u!114 &-4711227908775392299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9054305702208296287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec2c5a9b309534849852098cf0f94c7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyFlash
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashDuration: 0.1
