@@ -46,8 +46,8 @@ public class EnemySpawner : MonoBehaviour
         // Chọn ngẫu nhiên 1 loại quái trong danh sách
         GameObject prefabToSpawn = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
 
-        // Sinh ra con quái
-        GameObject newEnemy = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+        // LẤY QUÁI TỪ KHO (Object Pool) thay vì Instantiate
+        GameObject newEnemy = ObjectPool.Instance.GetEnemy(prefabToSpawn, spawnPosition);
 
         // Cường hóa con quái vừa sinh ra dựa theo hệ số độ khó hiện tại
         EnemyHealth enemyHealth = newEnemy.GetComponent<EnemyHealth>();
@@ -55,6 +55,9 @@ public class EnemySpawner : MonoBehaviour
         {
             // Nhân máu gốc với độ khó. Ví dụ hệ số 1.5 thì quái sẽ có 150 máu.
             enemyHealth.maxHealth = enemyHealth.maxHealth * difficultyMultiplier;
+
+            // Reset máu (rất quan trọng — quái lấy ra từ Pool có thể đang máu 0 từ lần chết trước)
+            enemyHealth.ResetHealth();
 
             // Đổi tên nó một chút cho ngầu để bạn dễ theo dõi ở Console
             newEnemy.name = "Enemy Lv." + (difficultyMultiplier * 10).ToString("0");

@@ -24,6 +24,11 @@ public class ItemPickup : MonoBehaviour
             if (inventory != null)
             {
                 inventory.AddItem(itemData);
+
+                // Phát âm thanh nhặt đồ
+                if (AudioManager.Instance != null)
+                    AudioManager.Instance.PlayPickupItem();
+
                 Destroy(gameObject); // Nhặt xong thì xóa cục đồ trên đất
             }
         }
