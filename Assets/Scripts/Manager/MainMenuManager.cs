@@ -13,6 +13,7 @@ public class MainMenuManager : MonoBehaviour
     public GameObject player;
     public GameObject healthBarUI; // MỚI THÊM: Cổng kết nối với thanh máu
     public GameObject expBarUI;
+    public GameObject killCounterUI; // Để ẩn/hiện chữ "Kills"
 
     public enum WeaponType { Pistol, Shotgun, Sword, None }
     public static WeaponType selectedWeapon = WeaponType.None;
@@ -26,6 +27,7 @@ public class MainMenuManager : MonoBehaviour
 
         if (healthBarUI != null) healthBarUI.SetActive(false);
         if (expBarUI != null) expBarUI.SetActive(false);
+        if (killCounterUI != null) killCounterUI.SetActive(false);
 
         // Hide Start button and show default text initially
         startButton.SetActive(false);
@@ -65,6 +67,7 @@ public class MainMenuManager : MonoBehaviour
 
         if (healthBarUI != null) healthBarUI.SetActive(true);
         if (expBarUI != null) expBarUI.SetActive(true);
+        if (killCounterUI != null) killCounterUI.SetActive(true);
 
         Time.timeScale = 1f;
         Debug.Log("Game started with weapon: " + selectedWeapon.ToString());
