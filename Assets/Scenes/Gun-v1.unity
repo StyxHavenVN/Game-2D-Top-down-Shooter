@@ -508,16 +508,16 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 92870442e50f3454b81f3d09ecc1af27, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
-  musicSource: {fileID: 583303900}
-  sfxSource: {fileID: 583303899}
+  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  musicSource: {fileID: 0}
+  sfxSource: {fileID: 583303900}
   pistolShootClip: {fileID: 8300000, guid: d88c882304513a8428737cf06914a845, type: 3}
   shotgunShootClip: {fileID: 8300000, guid: d88c882304513a8428737cf06914a845, type: 3}
   swordSlashClip: {fileID: 8300000, guid: d88c882304513a8428737cf06914a845, type: 3}
-  enemyHitClip: {fileID: 8300000, guid: 88fa6648c42f91144ac584d1af0b3daf, type: 3}
-  levelUpClip: {fileID: 8300000, guid: 28ace2352ca7c5643b9488dd26372318, type: 3}
-  pickupItemClip: {fileID: 8300000, guid: cf6ae87ab29a0b34b819b02659b57f06, type: 3}
-  enemyDeathClip: {fileID: 8300000, guid: 7da63e53b9e2e7d47b4365c730c7d575, type: 3}
+  enemyHitClip: {fileID: 0}
+  levelUpClip: {fileID: 0}
+  pickupItemClip: {fileID: 0}
+  enemyDeathClip: {fileID: 0}
 --- !u!4 &583303898
 Transform:
   m_ObjectHideFlags: 0
