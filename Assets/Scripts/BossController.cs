@@ -6,7 +6,7 @@ public class BossController : MonoBehaviour
     public enum BossState { Idle, Chasing, SkillSpreadShoot, SkillDash }
     
     [Header("Dữ liệu Boss (Kéo Boss_Data vào đây)")]
-    public EnemyData enemyData;
+    //public EnemyData enemyData;
 
     [Header("Cài đặt chung")]
     public BossState currentState = BossState.Chasing;
@@ -33,14 +33,14 @@ public class BossController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         
-        // Đọc thông số từ thẻ Data
-        if (enemyData != null)
-        {
-            moveSpeed = enemyData.moveSpeed;
-            stateCooldown = enemyData.attackCooldown;
-            bulletForce = enemyData.bulletSpeed;
-            damage = enemyData.damage;
-        }
+        //// Đọc thông số từ thẻ Data
+        //if (enemyData != null)
+        //{
+        //    moveSpeed = enemyData.moveSpeed;
+        //    stateCooldown = enemyData.attackCooldown;
+        //    bulletForce = enemyData.bulletSpeed;
+        //    damage = enemyData.damage;
+        //}
         
         GameObject p = GameObject.Find("Player");
         if (p != null) player = p.transform;

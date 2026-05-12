@@ -3060,7 +3060,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7802baa92d2e66545a96ab93fd7becb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  enemyPrefab: {fileID: 7284578795452900971, guid: acea0d531026e474d8e3c217eafde7aa, type: 3}
+  enemyPrefabs:
+  - {fileID: 7284578795452900971, guid: acea0d531026e474d8e3c217eafde7aa, type: 3}
+  - {fileID: 9054305702208296287, guid: c87ebe2c0c838c841b1ac44a8083823b, type: 3}
   player: {fileID: 917658875}
   spawnRate: 3
   difficultyMultiplier: 1
