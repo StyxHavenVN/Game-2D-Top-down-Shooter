@@ -39,12 +39,18 @@ public class EnemySpawner : MonoBehaviour
 
         GameObject prefabToSpawn = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
 
-        GameObject newEnemy = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+        // LẤY QUÁI TỪ KHO (Object Pool) thay vì Instantiate
+        GameObject newEnemy = ObjectPool.Instance.GetEnemy(prefabToSpawn, spawnPosition);
 
         EnemyHealth enemyHealth = newEnemy.GetComponent<EnemyHealth>();
         if (enemyHealth != null)
         {
             enemyHealth.maxHealth = enemyHealth.maxHealth * difficultyMultiplier;
+
+            // Reset máu (rất quan trọng — quái lấy ra từ Pool có thể đang máu 0 từ lần chết trước)
+            enemyHealth.ResetHealth();
+
+            // Đổi tên nó một chút cho ngầu để bạn dễ theo dõi ở Console
             newEnemy.name = "Enemy Lv." + (difficultyMultiplier * 10).ToString("0");
         }
     }

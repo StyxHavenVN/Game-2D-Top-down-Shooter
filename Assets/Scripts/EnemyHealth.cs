@@ -31,11 +31,41 @@ public class EnemyHealth : MonoBehaviour
         UpdateHealthBar();
     }
 
+    /// <summary>
+    /// Reset máu về đầy (gọi khi lấy quái ra từ Object Pool).
+    /// </summary>
+    public void ResetHealth()
+    {
+        if (enemyData != null)
+            maxHealth = enemyData.maxHP;
+
+        currentHealth = maxHealth;
+        isBurning = false;
+        burnDuration = 0f;
+        UpdateHealthBar();
+    }
+
+    void OnEnable()
+    {
+        // Mỗi lần quái được bật lên (lấy ra từ Pool), reset máu
+        // Chú ý: maxHealth có thể bị EnemySpawner ghi đè sau OnEnable, 
+        // nên EnemySpawner sẽ gọi ResetHealth() thêm 1 lần nữa.
+        currentHealth = maxHealth;
+        isBurning = false;
+    }
+
     // Nhận sát thương
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
         UpdateHealthBar();
+
+        // Hiển thị Popup Sát thương
+        DamagePopup.Create(transform.position, (int)damage);
+
+        // Phát âm thanh khi quái bị trúng đòn
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayEnemyHit();
 
         if (currentHealth <= 0)
             Die();
@@ -55,10 +85,56 @@ public class EnemyHealth : MonoBehaviour
             Instantiate(expOrbPrefab, transform.position, Quaternion.identity);
         }
 
+        // Tự động rớt Vật phẩm Đặc Biệt (Xác suất % thông qua ItemDropManager)
+        if (ItemDropManager.Instance != null)
+        {
+            ItemDropManager.Instance.TryDropItem(transform.position);
+        }
+
+        // Phát âm thanh quái chết
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayEnemyDeath();
+
         // Báo GameManager đếm Kill
         if (GameManager.Instance != null)
             GameManager.Instance.RegisterKill();
 
-        Destroy(gameObject);
+        // TRẢ QUÁI VỀ KHO (Object Pool) thay vì Destroy
+        if (ObjectPool.Instance != null)
+            ObjectPool.Instance.ReturnEnemy(gameObject);
+        else
+            gameObject.SetActive(false); // Fallback an toàn
+    }
+
+    // --- HIỆU ỨNG BURN ---
+    private bool isBurning = false;
+    private float burnDamagePerSec;
+    private float burnDuration;
+
+    public void ApplyBurn(float dps, float duration)
+    {
+        isBurning = true;
+        burnDamagePerSec = dps;
+        burnDuration = duration;
+    }
+
+    void Update()
+    {
+        // Xử lý logic đốt cháy theo thời gian
+        if (isBurning)
+        {
+            burnDuration -= Time.deltaTime;
+            currentHealth -= burnDamagePerSec * Time.deltaTime;
+            UpdateHealthBar();
+
+            // Hiển thị Popup sát thương Burn mỗi giây (dùng mẹo random để khỏi hiển thị liên tục mỗi frame)
+            if (Random.Range(0, 100) < 5)
+            {
+                DamagePopup.Create(transform.position, Mathf.CeilToInt(burnDamagePerSec));
+            }
+
+            if (currentHealth <= 0) Die();
+            if (burnDuration <= 0) isBurning = false;
+        }
     }
 }

@@ -18,10 +18,6 @@ public class GameManager : MonoBehaviour
     public int maxKillsToSpawnBoss = 20;  // Ngưỡng tối đa
     public Transform player;               // Kéo Player vào đây
 
-    // ── UI Kill Counter ────────────────────────────────────────
-    [Header("UI Kill Counter")]
-    public TextMeshProUGUI killCountText;  // Kéo Text "Kills" vào đây
-
     // ── Biến nội bộ ────────────────────────────────────────────
     private int currentKills = 0;          // Số kill hiện tại
     private int killThreshold;             // Ngưỡng ngẫu nhiên để Boss xuất hiện
@@ -105,19 +101,20 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("[GameManager] Chưa gán bossPrefab hoặc player!");
         }
 
-        // Cập nhật UI: đổi text thành "BOSS!" 
-        if (killCountText != null)
-            killCountText.text = "⚠ BOSS!";
+        // Cập nhật UI qua UIManager
+        UpdateKillUI();
     }
 
     // ──────────────────────────────────────────────────────────
     /// <summary>
-    /// Cập nhật text hiển thị số kill trên HUD.
+    /// Cập nhật text hiển thị số kill trên HUD qua UIManager.
     /// </summary>
     private void UpdateKillUI()
     {
-        if (killCountText != null)
-            killCountText.text = $"Kills: {currentKills} / {killThreshold}";
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateKillCount(currentKills, killThreshold, bossSpawned);
+        }
     }
 
     // ── Getter công khai ───────────────────────────────────────

@@ -39,6 +39,10 @@ public class LevelUpManager : MonoBehaviour
         Time.timeScale = 0f;
         levelUpPanel.SetActive(true);
 
+        // Phát âm thanh Level Up
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayLevelUp();
+
         List<UpgradeOption> pool = new List<UpgradeOption>(allUpgrades);
         for (int i = 0; i < 3; i++)
         {

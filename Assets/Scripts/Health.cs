@@ -11,10 +11,6 @@ public class Health : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
 
-    [Header("Giao Diện Thanh Máu")]
-    public Image healthFillImage;       // Kéo HealthBar_Fill vào đây
-    public TextMeshProUGUI hpText;      // Kéo HP_Text vào đây
-
     [Header("Quản lý Game Over")]
     public GameOverManager gameOverManager;
 
@@ -68,13 +64,12 @@ public class Health : MonoBehaviour
     /// <summary>Trả về true nếu đang trong trạng thái miễn nhiễm.</summary>
     public bool IsInvincible() => isInvincible;
 
-    // Cập nhật giao diện thanh máu và text
+    // Cập nhật giao diện thanh máu qua UIManager
     private void UpdateHealthUI()
     {
-        if (healthFillImage != null)
-            healthFillImage.fillAmount = (float)currentHealth / maxHealth;
-
-        if (hpText != null)
-            hpText.text = currentHealth + " / " + maxHealth;
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateHP(currentHealth, maxHealth);
+        }
     }
 }

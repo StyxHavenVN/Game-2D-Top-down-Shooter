@@ -488,6 +488,7 @@ GameObject:
   m_Component:
   - component: {fileID: 583303898}
   - component: {fileID: 583303897}
+  - component: {fileID: 583303900}
   - component: {fileID: 583303899}
   m_Layer: 0
   m_Name: AudioManager
@@ -508,10 +509,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92870442e50f3454b81f3d09ecc1af27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  effectAudioSource: {fileID: 583303899}
-  shootClip: {fileID: 8300000, guid: d88c882304513a8428737cf06914a845, type: 3}
-  reloadClip: {fileID: 8300000, guid: 88fa6648c42f91144ac584d1af0b3daf, type: 3}
-  energyClip: {fileID: 8300000, guid: 28ace2352ca7c5643b9488dd26372318, type: 3}
+  musicSource: {fileID: 583303900}
+  sfxSource: {fileID: 583303899}
+  pistolShootClip: {fileID: 8300000, guid: d88c882304513a8428737cf06914a845, type: 3}
+  shotgunShootClip: {fileID: 8300000, guid: d88c882304513a8428737cf06914a845, type: 3}
+  swordSlashClip: {fileID: 8300000, guid: d88c882304513a8428737cf06914a845, type: 3}
+  enemyHitClip: {fileID: 8300000, guid: 88fa6648c42f91144ac584d1af0b3daf, type: 3}
+  levelUpClip: {fileID: 8300000, guid: 28ace2352ca7c5643b9488dd26372318, type: 3}
+  pickupItemClip: {fileID: 8300000, guid: cf6ae87ab29a0b34b819b02659b57f06, type: 3}
+  enemyDeathClip: {fileID: 8300000, guid: 7da63e53b9e2e7d47b4365c730c7d575, type: 3}
 --- !u!4 &583303898
 Transform:
   m_ObjectHideFlags: 0
@@ -539,7 +545,104 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 0
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &583303900
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 583303896}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -1185,6 +1288,56 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &879064764
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 879064765}
+  - component: {fileID: 879064766}
+  m_Layer: 0
+  m_Name: UIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &879064765
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 879064764}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.48444, y: 0.09028998, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1215424381}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &879064766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 879064764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8289361e09949104a88bb9796588897f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIManager
+  hpBarFill: {fileID: 1041586633}
+  hpText: {fileID: 1852757510}
+  expBarFill: {fileID: 752672989}
+  expText: {fileID: 1056373936}
+  levelText: {fileID: 903851517}
+  killCountText: {fileID: 1477456616}
 --- !u!1 &903851514
 GameObject:
   m_ObjectHideFlags: 0
@@ -1343,6 +1496,10 @@ GameObject:
   - component: {fileID: 917658886}
   - component: {fileID: 917658887}
   - component: {fileID: 917658888}
+  - component: {fileID: 917658889}
+  - component: {fileID: 917658892}
+  - component: {fileID: 917658891}
+  - component: {fileID: 917658890}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1384,9 +1541,6 @@ MonoBehaviour:
   expToNextLevel: 100
   atkMultiplier: 0
   defMultiplier: 0
-  levelText: {fileID: 903851517}
-  expBarFill: {fileID: 752672989}
-  expText: {fileID: 1056373936}
   levelUpManager: {fileID: 1215424382}
 --- !u!114 &917658878
 MonoBehaviour:
@@ -1402,8 +1556,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Health
   maxHealth: 100
   currentHealth: 0
-  healthFillImage: {fileID: 1041586633}
-  hpText: {fileID: 1852757510}
   gameOverManager: {fileID: 1215424378}
 --- !u!114 &917658879
 MonoBehaviour:
@@ -1460,17 +1612,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bf30bd5031794f44afae704e072733c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  pistolBulletPrefab: {fileID: 2489217031305568967, guid: 58037412ba1c7be4597a2206bbd149b1, type: 3}
-  shotgunBulletPrefab: {fileID: 0}
-  swordSlashPrefab: {fileID: 5911177196762440587, guid: ce94ab7ea6dd4904e8812f66e4278ef4, type: 3}
-  pistolForce: 20
-  pistolCooldown: 0.2
-  shotgunForce: 15
-  shotgunCooldown: 0.8
-  pelletsCount: 5
-  spreadAngle: 45
-  swordCooldown: 0.5
-  swordRange: 1
+  pistolWeapon: {fileID: 917658892}
+  shotgunWeapon: {fileID: 917658891}
+  swordWeapon: {fileID: 917658890}
 --- !u!61 &917658882
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1712,6 +1856,61 @@ MonoBehaviour:
   ghostDelay: 0.05
   destroyTime: 0.3
   ghostColor: {r: 0.5, g: 0.8, b: 1, a: 0.6}
+--- !u!114 &917658889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917658874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68e4126a0fb49d7439b6afd48cf74330, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryManager
+  hasPierce: 0
+  hasBurn: 0
+  lifestealPercent: 0
+--- !u!114 &917658890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917658874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dde6859b33af6214aa759d3c3e0a7ec6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwordWeapon
+  weaponData: {fileID: 11400000, guid: 4ef6cd670de69d84393ae6fb3fb98a04, type: 2}
+  swordSlashPrefab: {fileID: 5911177196762440587, guid: ce94ab7ea6dd4904e8812f66e4278ef4, type: 3}
+--- !u!114 &917658891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917658874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96866d9bbdc03d34495cec63c7a5b520, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShotgunWeapon
+  weaponData: {fileID: 11400000, guid: e758448c9bc21e74e84c7a2684e97e63, type: 2}
+--- !u!114 &917658892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917658874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758bbf4d30123fe4e990584968f9cbaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PistolWeapon
+  weaponData: {fileID: 11400000, guid: 6e108ab1d62853247bf5a159e7641e9d, type: 2}
 --- !u!1 &923165480
 GameObject:
   m_ObjectHideFlags: 0
@@ -3046,6 +3245,7 @@ GameObject:
   - component: {fileID: 1215424378}
   - component: {fileID: 1215424382}
   - component: {fileID: 1215424383}
+  - component: {fileID: 1215424384}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3116,7 +3316,8 @@ Transform:
   m_LocalPosition: {x: -0.79333, y: -0.43315, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 879064765}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1215424382
@@ -3153,7 +3354,24 @@ MonoBehaviour:
   minKillsToSpawnBoss: 5
   maxKillsToSpawnBoss: 20
   player: {fileID: 917658875}
-  killCountText: {fileID: 1477456616}
+--- !u!114 &1215424384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215424377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d9c7952af3b606468b0732e563df936, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemDropManager
+  itemPickupPrefab: {fileID: 2683888631054158743, guid: 26ff2acd1c2db984cae5e818e1974843, type: 3}
+  possibleItems:
+  - {fileID: 11400000, guid: c44c5bf3f36805e43ba602357de398b8, type: 2}
+  - {fileID: 11400000, guid: 65d0bc9b3a5691043b8f0282da7ec90d, type: 2}
+  - {fileID: 11400000, guid: 9a6413d940b3c0f439ca8aeb8af4e62c, type: 2}
+  dropChance: 0.6
 --- !u!1 &1245024262
 GameObject:
   m_ObjectHideFlags: 0
@@ -3420,6 +3638,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ObjectPool
   bulletPrefab: {fileID: 2489217031305568967, guid: 58037412ba1c7be4597a2206bbd149b1, type: 3}
   bulletPoolSize: 50
+  enemyPrefabs:
+  - {fileID: 7284578795452900971, guid: acea0d531026e474d8e3c217eafde7aa, type: 3}
+  - {fileID: 9054305702208296287, guid: c87ebe2c0c838c841b1ac44a8083823b, type: 3}
+  enemyPoolSizePerType: 20
 --- !u!4 &1357771543
 Transform:
   m_ObjectHideFlags: 0
