@@ -37,6 +37,6 @@ public class PistolWeapon : WeaponBase
 
         // Rung camera nhẹ khi bắn súng lục
         if (CameraShake.Instance != null)
-            CameraShake.Instance.Shake(0.08f, 0.08f);
+            CameraShake.Instance.Shake(0.02f, 0.02f);
     }
 }

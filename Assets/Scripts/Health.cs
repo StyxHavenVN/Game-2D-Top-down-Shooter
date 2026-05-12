@@ -43,7 +43,7 @@ public class Health : MonoBehaviour
 
         // 📸 RUNG CAMERA MẠNH khi Player bị đánh (đau hơn quái trúng đạn)
         if (CameraShake.Instance != null)
-            CameraShake.Instance.Shake(0.2f, 0.15f);
+            CameraShake.Instance.Shake(0.1f, 0.05f);
 
         if (currentHealth <= 0)
         {

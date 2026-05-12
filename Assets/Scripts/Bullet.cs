@@ -42,6 +42,7 @@ public class BulletDamage : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        // Phải kiểm tra xem có trúng "Enemy" không đã
         if (other.CompareTag("Enemy"))
         {
             EnemyHealth enemy = other.GetComponent<EnemyHealth>();

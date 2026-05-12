@@ -17,6 +17,7 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
+        // isPressed cho phép GIỮ chuột để xả đạn (hoặc chém) liên tục
         if (Mouse.current != null && Mouse.current.leftButton.isPressed)
         {
             Attack();
