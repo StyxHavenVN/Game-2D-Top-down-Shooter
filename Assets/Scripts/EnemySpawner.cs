@@ -43,6 +43,9 @@ public class EnemySpawner : MonoBehaviour
         Vector2 randomDirection = Random.insideUnitCircle.normalized;
         Vector2 spawnPosition = (Vector2)player.position + (randomDirection * 8f);
 
+        // Tránh lỗi index out of bounds nếu chưa cấu hình quái
+        if (enemyPrefabs == null || enemyPrefabs.Length == 0) return;
+
         // Chọn ngẫu nhiên 1 loại quái trong danh sách
         GameObject prefabToSpawn = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
 

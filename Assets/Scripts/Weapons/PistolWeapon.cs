@@ -34,5 +34,9 @@ public class PistolWeapon : WeaponBase
 
         // Phát âm thanh
         if (audioManager != null) audioManager.PlayPistolShoot();
+
+        // Rung camera nhẹ khi bắn súng lục
+        if (CameraShake.Instance != null)
+            CameraShake.Instance.Shake(0.08f, 0.08f);
     }
 }
