@@ -29,8 +29,8 @@ Transform:
   m_GameObject: {fileID: 2489217031305568967}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.79333, y: -2.43315, z: 0}
-  m_LocalScale: {x: 8, y: 8, z: 1}
+  m_LocalPosition: {x: -1.6975, y: -2.43315, z: 0}
+  m_LocalScale: {x: 5.0504, y: 8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -136,6 +136,8 @@ MonoBehaviour:
   damage: 35
   lifetime: 3
   bloodPrefabs: {fileID: 6431252878259218972, guid: 5273144af0448ae44ac136c5df1c2082, type: 3}
+  isPierce: 0
+  isBurn: 0
 --- !u!61 &831604616070329936
 BoxCollider2D:
   m_ObjectHideFlags: 0
