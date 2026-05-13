@@ -37,15 +37,24 @@ public class KamikazeEnemy : MonoBehaviour
     // Biến nội bộ
     private Transform player;
     private Rigidbody2D rb;
+    private SpriteRenderer spriteRenderer;
     private float moveSpeed = 5f;
     private float damage = 10f;
     private bool isDetonating = false;
     private Vector3 originalScale;
+    private bool hasInitialized = false;
 
     void Start()
     {
+        Initialize();
+    }
+
+    private void Initialize()
+    {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         originalScale = transform.localScale;
+        hasInitialized = true;
 
         // Đọc thông số từ thẻ Data
         if (enemyData != null)
@@ -55,17 +64,32 @@ public class KamikazeEnemy : MonoBehaviour
             explosionDamage = damage * 2.5f; // Sát thương nổ = 2.5x sát thương thường
         }
 
-        // Tìm Player
-        GameObject playerObj = GameObject.Find("Player");
-        if (playerObj != null)
-            player = playerObj.transform;
+        FindPlayer();
     }
 
     void OnEnable()
     {
         // Reset trạng thái khi lấy ra từ Pool
         isDetonating = false;
-        transform.localScale = originalScale != Vector3.zero ? originalScale : Vector3.one;
+        if (hasInitialized)
+        {
+            transform.localScale = originalScale;
+            // Reset màu sprite
+            if (spriteRenderer != null)
+                spriteRenderer.color = Color.white;
+        }
+        FindPlayer();
+    }
+
+    private void FindPlayer()
+    {
+        if (player == null)
+        {
+            GameObject playerObj = GameObject.FindWithTag("Player");
+            if (playerObj == null) playerObj = GameObject.Find("Player");
+            if (playerObj != null)
+                player = playerObj.transform;
+        }
     }
 
     void Update()
@@ -73,6 +97,14 @@ public class KamikazeEnemy : MonoBehaviour
         if (player == null || isDetonating) return;
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+
+        // Lật sprite theo hướng di chuyển
+        if (spriteRenderer != null)
+        {
+            float dirX = player.position.x - transform.position.x;
+            if (dirX > 0.1f) spriteRenderer.flipX = false;
+            else if (dirX < -0.1f) spriteRenderer.flipX = true;
+        }
 
         if (distanceToPlayer <= detonateDistance)
         {
@@ -104,12 +136,11 @@ public class KamikazeEnemy : MonoBehaviour
         Vector3 targetScale = startScale * 1.8f; // Phình to gấp 1.8 lần
 
         // Đổi màu đỏ rực để cảnh báo
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
         Color originalColor = Color.white;
-        if (sr != null)
+        if (spriteRenderer != null)
         {
-            originalColor = sr.color;
-            sr.color = Color.red;
+            originalColor = spriteRenderer.color;
+            spriteRenderer.color = Color.red;
         }
 
         while (elapsed < fuseTime)
@@ -118,8 +149,8 @@ public class KamikazeEnemy : MonoBehaviour
             // Phình to dần dần
             transform.localScale = Vector3.Lerp(startScale, targetScale, elapsed / fuseTime);
             // Nhấp nháy giữa đỏ và trắng (cảnh báo nguy hiểm!)
-            if (sr != null)
-                sr.color = Mathf.PingPong(Time.time * 10f, 1f) > 0.5f ? Color.red : Color.white;
+            if (spriteRenderer != null)
+                spriteRenderer.color = Mathf.PingPong(Time.time * 10f, 1f) > 0.5f ? Color.red : Color.white;
             yield return null;
         }
 

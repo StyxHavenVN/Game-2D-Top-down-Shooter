@@ -1,37 +1,65 @@
 using UnityEngine;
 
+/// <summary>
+/// EnemySpawner cũ — KHÔNG CÒN SỬ DỤNG.
+/// GameManager giờ quản lý toàn bộ việc spawn quái theo hệ thống Wave.
+/// Script này được giữ lại để tương thích ngược (tránh lỗi tham chiếu).
+/// GameManager sẽ tự động tắt script này khi Start().
+/// </summary>
 public class EnemySpawner : MonoBehaviour
 {
     [Header("Danh sách các loại quái")]
-    public GameObject[] enemyPrefabs; // Chứa mảng các con quái mẫu (Gắn BasicEnemy và RangedEnemy vào đây)
-    public Transform player;       // Chứa vị trí người chơi
+    public GameObject[] enemyPrefabs;
+    public Transform player;
 
-    public float spawnRate = 3f;   // Cứ 3 giây đẻ 1 con
-    private float timer = 0f;      // Đồng hồ đếm giờ
+    public float spawnRate = 3f;
+    private float timer = 0f;
 
-    public float difficultyMultiplier = 1f; // Hệ số độ khó ban đầu là x1
+    [Header("Cài đặt Độ khó")]
+    public float difficultyMultiplier = 1f;
+    public float difficultyGrowthRate = 0.005f;
+    public float maxDifficultyMultiplier = 5f;
+
+    [Header("Cài đặt Spawn")]
+    public float spawnDistance = 8f;
+    public float minSpawnRate = 0.5f;
+    public float spawnRateDecay = 0.05f;
 
     void Start()
     {
-        if (player == null) player = GameObject.Find("Player").transform;
+        // GameManager tự quản lý spawn wave — Script này bị vô hiệu hóa tự động
+        if (GameManager.Instance != null)
+        {
+            Debug.Log("[EnemySpawner] Đã bị vô hiệu hóa — GameManager quản lý Wave.");
+            enabled = false;
+        }
+
+        if (player == null)
+        {
+            GameObject pObj = GameObject.FindWithTag("Player");
+            if (pObj == null) pObj = GameObject.Find("Player");
+            if (pObj != null) player = pObj.transform;
+        }
     }
 
     void Update()
     {
-        // 1. Hệ thống đếm thời gian
+        // Fallback: nếu không có GameManager, vẫn spawn kiểu cũ
+        if (player == null) return;
+
         timer += Time.deltaTime;
 
-        // 2. Làm quái mạnh lên theo thời gian (Mỗi giây tăng 1% máu)
-        difficultyMultiplier += Time.deltaTime * 0.01f;
+        if (difficultyMultiplier < maxDifficultyMultiplier)
+        {
+            difficultyMultiplier += Time.deltaTime * difficultyGrowthRate;
+            difficultyMultiplier = Mathf.Min(difficultyMultiplier, maxDifficultyMultiplier);
+        }
 
-        // 3. Đến giờ thì đẻ quái
         if (timer >= spawnRate)
         {
             SpawnEnemy();
-            timer = 0f; // Reset đồng hồ
-
-            // Ép người chơi: Càng về sau quái đẻ càng nhanh (Nhanh nhất là 0.5s/con)
-            spawnRate = Mathf.Max(0.5f, spawnRate - 0.05f);
+            timer = 0f;
+            spawnRate = Mathf.Max(minSpawnRate, spawnRate - spawnRateDecay);
         }
     }
 
@@ -39,31 +67,25 @@ public class EnemySpawner : MonoBehaviour
     {
         if (player == null) return;
 
-        // Tính toán vị trí đẻ quái ngẫu nhiên xung quanh người chơi (cách khoảng 8 mét)
         Vector2 randomDirection = Random.insideUnitCircle.normalized;
-        Vector2 spawnPosition = (Vector2)player.position + (randomDirection * 8f);
+        Vector2 spawnPosition = (Vector2)player.position + (randomDirection * spawnDistance);
 
-        // Tránh lỗi index out of bounds nếu chưa cấu hình quái
         if (enemyPrefabs == null || enemyPrefabs.Length == 0) return;
 
-        // Chọn ngẫu nhiên 1 loại quái trong danh sách
         GameObject prefabToSpawn = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
 
-        // LẤY QUÁI TỪ KHO (Object Pool) thay vì Instantiate
         GameObject newEnemy = ObjectPool.Instance.GetEnemy(prefabToSpawn, spawnPosition);
+        if (newEnemy == null) return;
 
-        // Cường hóa con quái vừa sinh ra dựa theo hệ số độ khó hiện tại
         EnemyHealth enemyHealth = newEnemy.GetComponent<EnemyHealth>();
         if (enemyHealth != null)
         {
-            // Nhân máu gốc với độ khó. Ví dụ hệ số 1.5 thì quái sẽ có 150 máu.
-            enemyHealth.maxHealth = enemyHealth.maxHealth * difficultyMultiplier;
+            float baseMaxHP = enemyHealth.maxHealth;
+            if (enemyHealth.enemyData != null)
+                baseMaxHP = enemyHealth.enemyData.maxHP;
 
-            // Reset máu (rất quan trọng — quái lấy ra từ Pool có thể đang máu 0 từ lần chết trước)
+            enemyHealth.maxHealth = baseMaxHP * difficultyMultiplier;
             enemyHealth.ResetHealth();
-
-            // Đổi tên nó một chút cho ngầu để bạn dễ theo dõi ở Console
-            newEnemy.name = "Enemy Lv." + (difficultyMultiplier * 10).ToString("0");
         }
     }
 }

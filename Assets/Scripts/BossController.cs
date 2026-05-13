@@ -14,6 +14,8 @@ public class BossController : MonoBehaviour
     private float moveSpeed = 1.5f;
     private float stateCooldown = 3f; 
     private float damage = 10f;
+    private float attackCooldown = 0.8f; // Cooldown va chạm gây sát thương
+    private float contactAttackTimer = 0f;
     
     [Header("Cài đặt Kỹ năng: Bắn chùm (Spread Shoot)")]
     public GameObject bossBulletPrefab;
@@ -27,22 +29,25 @@ public class BossController : MonoBehaviour
 
     private Transform player;
     private Rigidbody2D rb;
+    private SpriteRenderer spriteRenderer;
     private bool isExecutingSkill = false;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         
         // Đọc thông số từ thẻ Data
         if (enemyData != null)
         {
             moveSpeed = enemyData.moveSpeed;
-            stateCooldown = enemyData.attackCooldown; // Dùng attackCooldown làm thời gian nghỉ giữa các chiêu
+            stateCooldown = enemyData.attackCooldown;
             bulletForce = enemyData.bulletSpeed;
             damage = enemyData.damage;
         }
         
-        GameObject p = GameObject.Find("Player");
+        GameObject p = GameObject.FindWithTag("Player");
+        if (p == null) p = GameObject.Find("Player");
         if (p != null) player = p.transform;
 
         StartCoroutine(BossThinkRoutine());
@@ -52,10 +57,22 @@ public class BossController : MonoBehaviour
     {
         if (player == null || isExecutingSkill) return;
 
+        // Giảm cooldown sát thương va chạm
+        if (contactAttackTimer > 0f)
+            contactAttackTimer -= Time.deltaTime;
+
         if (currentState == BossState.Chasing)
         {
             Vector2 targetPos = Vector2.MoveTowards(transform.position, player.position, moveSpeed * Time.deltaTime);
             rb.MovePosition(targetPos);
+        }
+
+        // Lật sprite theo hướng di chuyển
+        if (spriteRenderer != null && player != null)
+        {
+            float dirX = player.position.x - transform.position.x;
+            if (dirX > 0.1f) spriteRenderer.flipX = false;
+            else if (dirX < -0.1f) spriteRenderer.flipX = true;
         }
     }
 
@@ -109,6 +126,8 @@ public class BossController : MonoBehaviour
 
     IEnumerator DashRoutine()
     {
+        if (player == null) yield break;
+
         Vector2 dashDirection = (player.position - transform.position).normalized;
         float startTime = Time.time;
         while (Time.time < startTime + dashDuration)
@@ -120,15 +139,19 @@ public class BossController : MonoBehaviour
         yield return new WaitForSeconds(0.5f); 
     }
     
-    // Boss chạm vào người chơi gây sát thương
+    // Boss chạm vào người chơi gây sát thương — CÓ COOLDOWN
     void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.name == "Player")
+        if (collision.gameObject.CompareTag("Player") || collision.gameObject.name == "Player")
         {
-            Health playerHealth = collision.gameObject.GetComponent<Health>();
-            if (playerHealth != null)
+            if (contactAttackTimer <= 0f)
             {
-                playerHealth.TakeDamage(Mathf.RoundToInt(damage)); 
+                Health playerHealth = collision.gameObject.GetComponent<Health>();
+                if (playerHealth != null)
+                {
+                    playerHealth.TakeDamage(Mathf.RoundToInt(damage)); 
+                }
+                contactAttackTimer = attackCooldown;
             }
         }
     }

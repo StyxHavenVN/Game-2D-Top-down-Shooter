@@ -10,7 +10,7 @@ public class EnemyData : ScriptableObject
     public float attackRange;
     public float attackCooldown;
     public float expReward;
-    public float detectionRange;
+    public float detectionRange = 15f; // Tầm phát hiện Player (mặc định 15)
 
     [Header("Ranged Only")]
     public float preferredDistance;

@@ -190,13 +190,13 @@ Ví dụ: Tại 100 kills → kẻ địch có HP × 1.2 và sát thương × 1.
 
 ### Điều khiển
 
-| Phím                 | Hành động                  |
-| --------------------- | ----------------------------- |
-| **WASD**        | Di chuyển                    |
-| **Chuột**      | Ngắm bắn                    |
-| **Click trái** | Bắn                          |
-| **Space**       | Dash (cooldown 3s, i-frames)  |
-| **ESC**         | Pause*(đang phát triển)* |
+| Phím                 | Hành động                 |
+| --------------------- | ---------------------------- |
+| **WASD**        | Di chuyển                   |
+| **Chuột**      | Ngắm bắn                   |
+| **Click trái** | Bắn                         |
+| **Space**       | Dash (cooldown 3s, i-frames) |
+| **ESC**         | Pause*(đang phát triển)*  |
 
 ---
 
@@ -834,23 +834,23 @@ public class FastGunWeapon : WeaponBase
 
 ## ✅ DANH SÁCH KIỂM TRA TRƯỚC KHI BUILD
 
-- [ ] Người chơi di chuyển được 4 hướng
-- [ ] Người chơi xoay về phía con trỏ chuột
-- [ ] Vũ khí bắn khi click chuột
-- [ ] Đạn trúng kẻ địch đúng layer
-- [ ] DamagePopup hiển thị khi đánh trúng
-- [ ] Kẻ địch chết → rơi EXP
-- [ ] Người chơi nhặt EXP → lên cấp
-- [ ] Màn hình chọn nâng cấp hiện 3 thẻ ngẫu nhiên
-- [ ] Nâng cấp được áp dụng vào PlayerStats
-- [ ] Dash hoạt động + có cooldown + có i-frames
-- [ ] Boss spawn đúng kill threshold
-- [ ] Telegraphing hoạt động (laser Boss, vòng đỏ Kamikaze)
-- [ ] Screen shake khi bắn Shotgun / nhận sát thương
+- [X] Người chơi di chuyển được 4 hướng
+- [X] Người chơi xoay về phía con trỏ chuột
+- [X] Vũ khí bắn khi click chuột
+- [X] Đạn trúng kẻ địch đúng layer
+- [X] DamagePopup hiển thị khi đánh trúng
+- [X] Kẻ địch chết → rơi EXP
+- [X] Người chơi nhặt EXP → lên cấp
+- [X] Màn hình chọn nâng cấp hiện 3 thẻ ngẫu nhiên
+- [X] Nâng cấp được áp dụng vào PlayerStats
+- [X] Dash hoạt động + có cooldown + có i-frames
+- [X] Boss spawn đúng kill threshold
+- [X] Telegraphing hoạt động (laser Boss, vòng đỏ Kamikaze)
+- [X] Screen shake khi bắn Shotgun / nhận sát thương
 - [ ] Game Over hiển thị kill count + level
-- [ ] Nút Restart load lại scene đúng
-- [ ] Nút Main Menu về đúng scene
-- [ ] Âm thanh phát đúng cho các sự kiện
+- [X] Nút Restart load lại scene đúng
+- [X] Nút Main Menu về đúng scene
+- [X] Âm thanh phát đúng cho các sự kiện
 
 ---
 
