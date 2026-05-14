@@ -1,97 +1,117 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-/// <summary>
-/// Singleton quản lý toàn bộ âm thanh (SFX & Music) trong game.
-/// Gọi từ bất kỳ đâu: AudioManager.Instance.PlayShootPistol();
-/// </summary>
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance { get; private set; }
+    public static AudioManager Instance;
 
-    [Header("Audio Sources")]
-    [Tooltip("Nguồn phát nhạc nền (BGM)")]
-    public AudioSource musicSource;
-    [Tooltip("Nguồn phát hiệu ứng âm thanh (SFX)")]
-    public AudioSource sfxSource;
+    [Header("Audio Source")]
+    public AudioSource audioSource;
 
-    [Header("Vũ Khí (Weapons)")]
+    [Header("Music")]
+    public AudioClip defaultMusicClip;
+    public AudioClip bossMusicClip;
+
+    [Header("Gun Sounds")]
     public AudioClip pistolShootClip;
     public AudioClip shotgunShootClip;
-    public AudioClip swordSlashClip;
 
-    [Header("Tương tác & Hệ thống")]
-    public AudioClip enemyHitClip;
-    public AudioClip levelUpClip;
-    public AudioClip pickupItemClip;
-    public AudioClip enemyDeathClip;
+    [Header("Reload Sounds")]
+    public AudioClip pistolReloadClip;
+    public AudioClip shotgunReloadClip;
 
-    private void Awake()
+    [Header("Other Effects")]
+    public AudioClip energyClip;
+    public AudioClip swordClip;
+
+    void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
         Instance = this;
 
-        // Tùy chọn: Giữ cho AudioManager không bị xóa khi chuyển Scene (Menu -> Game)
-        // DontDestroyOnLoad(gameObject);
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
+
+        audioSource.playOnAwake = false;
+        audioSource.loop = true;
     }
 
-    /// <summary>
-    /// Phát nhạc nền (BGM)
-    /// </summary>
-    public void PlayMusic(AudioClip bgmClip)
+    void Start()
     {
-        if (musicSource != null && bgmClip != null)
+        PlayDefaultMusic();
+    }
+
+    public void PlayDefaultMusic()
+    {
+        if (defaultMusicClip == null) return;
+
+        audioSource.loop = true;
+        audioSource.clip = defaultMusicClip;
+        audioSource.Play();
+    }
+
+    public void PlayBossMusic()
+    {
+        if (bossMusicClip == null) return;
+
+        audioSource.loop = true;
+        audioSource.clip = bossMusicClip;
+        audioSource.Play();
+    }
+
+    public void PlayPistolShootSound()
+    {
+        PlayEffect(pistolShootClip);
+    }
+
+    public void PlayShotgunShootSound()
+    {
+        if (shotgunShootClip != null)
         {
-            musicSource.clip = bgmClip;
-            musicSource.loop = true;
-            musicSource.Play();
+            PlayEffect(shotgunShootClip);
+        }
+        else
+        {
+            PlayEffect(pistolShootClip);
         }
     }
 
-    // ─── CÁC HÀM PHÁT SFX ──────────────────────────────────────────
-
-    public void PlayPistolShoot()
+    public void PlayPistolReloadSound()
     {
-        if (sfxSource != null && pistolShootClip != null)
-            sfxSource.PlayOneShot(pistolShootClip);
+        PlayEffect(pistolReloadClip);
     }
 
-    public void PlayShotgunShoot()
+    public void PlayShotgunReloadSound()
     {
-        if (sfxSource != null && shotgunShootClip != null)
-            sfxSource.PlayOneShot(shotgunShootClip);
+        if (shotgunReloadClip != null)
+        {
+            PlayEffect(shotgunReloadClip);
+        }
+        else
+        {
+            PlayEffect(pistolReloadClip);
+        }
     }
 
-    public void PlaySwordSlash()
+    public void PlayEnergySound()
     {
-        if (sfxSource != null && swordSlashClip != null)
-            sfxSource.PlayOneShot(swordSlashClip);
+        PlayEffect(energyClip);
     }
 
-    public void PlayEnemyHit()
+    public void PlaySwordSound()
     {
-        if (sfxSource != null && enemyHitClip != null)
-            sfxSource.PlayOneShot(enemyHitClip, 0.7f); // Giảm âm lượng một chút để không bị đinh tai khi bắn chùm
+        PlayEffect(swordClip);
     }
 
-    public void PlayEnemyDeath()
+    void PlayEffect(AudioClip clip)
     {
-        if (sfxSource != null && enemyDeathClip != null)
-            sfxSource.PlayOneShot(enemyDeathClip);
-    }
+        if (clip == null) return;
 
-    public void PlayPickupItem()
-    {
-        if (sfxSource != null && pickupItemClip != null)
-            sfxSource.PlayOneShot(pickupItemClip);
-    }
-
-    public void PlayLevelUp()
-    {
-        if (sfxSource != null && levelUpClip != null)
-            sfxSource.PlayOneShot(levelUpClip);
+        audioSource.PlayOneShot(clip);
     }
 }

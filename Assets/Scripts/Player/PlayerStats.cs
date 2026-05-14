@@ -13,6 +13,11 @@ public class PlayerStats : MonoBehaviour
     public float atkMultiplier = 0f;
     public float defMultiplier = 0f;
 
+    [Header("Giao diện UI")]
+    public TextMeshProUGUI levelText;  // Kéo chữ Level vào đây
+    public Image expBarFill;           // Kéo thanh ngang màu xanh lá vào đây
+    public TextMeshProUGUI expText;    // Kéo chữ hiển thị 0/10 XP vào đây
+
     [Header("Tham chiếu Script khác")]
     public LevelUpManager levelUpManager;
     private Health playerHealth;
@@ -69,20 +74,29 @@ public class PlayerStats : MonoBehaviour
         {
             playerHealth.maxHealth += amount;
             playerHealth.currentHealth += amount;
-
-            if (playerHealth.currentHealth > playerHealth.maxHealth)
-            {
-                playerHealth.currentHealth = playerHealth.maxHealth;
-            }
-
-            playerHealth.UpdateHealthUI();
         }
     }
+
+    // THÊM MỚI: Hàm chuyên xử lý việc hiển thị chữ và độ dài thanh màu xanh
     void UpdateExpUI()
     {
-        if (UIManager.Instance != null)
+        // 1. Cập nhật chữ Cấp độ (Level)
+        if (levelText != null)
         {
-            UIManager.Instance.UpdateEXP(currentExp, expToNextLevel, level);
+            levelText.text = level.ToString();
+        }
+
+        // 2. Cập nhật chữ EXP (Ví dụ: 5 / 10 XP (50%))
+        if (expText != null)
+        {
+            float percent = (float)currentExp / expToNextLevel * 100f;
+            expText.text = $"{currentExp} / {expToNextLevel} XP ({percent:F0}%)";
+        }
+
+        // 3. Cập nhật độ dài của thanh màu xanh lá (từ 0.0 đến 1.0)
+        if (expBarFill != null)
+        {
+            expBarFill.fillAmount = (float)currentExp / expToNextLevel;
         }
     }
 }
