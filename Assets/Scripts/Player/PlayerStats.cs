@@ -1,6 +1,6 @@
 using UnityEngine;
-using UnityEngine.UI; // Thêm dòng này để xài Image (Thanh máu/exp)
-using TMPro;          // Thêm dòng này để xài TextMeshPro
+using UnityEngine.UI; 
+using TMPro;        
 
 public class PlayerStats : MonoBehaviour
 {
@@ -14,9 +14,9 @@ public class PlayerStats : MonoBehaviour
     public float defMultiplier = 0f;
 
     [Header("Giao diện UI")]
-    public TextMeshProUGUI levelText;  // Kéo chữ Level vào đây
-    public Image expBarFill;           // Kéo thanh ngang màu xanh lá vào đây
-    public TextMeshProUGUI expText;    // Kéo chữ hiển thị 0/10 XP vào đây
+    public TextMeshProUGUI levelText; 
+    public Image expBarFill;          
+    public TextMeshProUGUI expText;   
 
     [Header("Tham chiếu Script khác")]
     public LevelUpManager levelUpManager;
@@ -27,7 +27,6 @@ public class PlayerStats : MonoBehaviour
         playerHealth = GetComponent<Health>();
         CalculateNextLevelExp();
 
-        // QUAN TRỌNG: Cập nhật giao diện về Level 1 ngay khi vừa vào game
         UpdateExpUI();
     }
 
@@ -41,7 +40,6 @@ public class PlayerStats : MonoBehaviour
             LevelUp();
         }
 
-        // Cập nhật lại UI sau khi nhận thêm điểm
         UpdateExpUI();
     }
 
@@ -59,7 +57,6 @@ public class PlayerStats : MonoBehaviour
             levelUpManager.TriggerLevelUp();
         }
 
-        // Cập nhật lại UI sau khi lên cấp
         UpdateExpUI();
     }
 
@@ -68,32 +65,47 @@ public class PlayerStats : MonoBehaviour
         expToNextLevel = Mathf.RoundToInt(10f * Mathf.Pow(level, 1.5f));
     }
 
+    // --- CÁC HÀM XỬ LÝ NÂNG CẤP TỪ LEVEL UP MANAGER ---
+
     public void UpgradeMaxHP(int amount)
     {
         if (playerHealth != null)
         {
             playerHealth.maxHealth += amount;
             playerHealth.currentHealth += amount;
+
+            if (playerHealth.currentHealth > playerHealth.maxHealth)
+            {
+                playerHealth.currentHealth = playerHealth.maxHealth;
+            }
+            playerHealth.UpdateHealthUI(); 
         }
     }
 
-    // THÊM MỚI: Hàm chuyên xử lý việc hiển thị chữ và độ dài thanh màu xanh
+    public void UpgradeATK(float amount)
+    {
+        atkMultiplier += amount;
+        Debug.Log($"[Nâng cấp] Sát thương tăng thêm {amount * 100}%. Tổng buff: +{atkMultiplier * 100}%");
+    }
+
+    public void UpgradeDEF(float amount)
+    {
+        defMultiplier += amount;
+        Debug.Log($"[Nâng cấp] Giảm sát thương nhận vào thêm {amount * 100}%. Tổng buff: +{defMultiplier * 100}%");
+    }
     void UpdateExpUI()
     {
-        // 1. Cập nhật chữ Cấp độ (Level)
         if (levelText != null)
         {
             levelText.text = level.ToString();
         }
 
-        // 2. Cập nhật chữ EXP (Ví dụ: 5 / 10 XP (50%))
         if (expText != null)
         {
             float percent = (float)currentExp / expToNextLevel * 100f;
             expText.text = $"{currentExp} / {expToNextLevel} XP ({percent:F0}%)";
         }
 
-        // 3. Cập nhật độ dài của thanh màu xanh lá (từ 0.0 đến 1.0)
         if (expBarFill != null)
         {
             expBarFill.fillAmount = (float)currentExp / expToNextLevel;

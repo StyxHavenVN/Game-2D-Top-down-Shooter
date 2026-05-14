@@ -3,22 +3,24 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     [Header("Sát thương")]
-    public int damage = 15;
+    public int damage = 15; 
 
     [Header("Tự hủy")]
     public float lifetime = 3f;
 
     [Header("Hiệu ứng máu")]
     public GameObject bloodPrefabs;
+    private PlayerStats playerStats;
 
     void Start()
     {
+        playerStats = FindObjectOfType<PlayerStats>();
+
         Destroy(gameObject, lifetime);
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // Tìm EnemyBase trên object bị trúng hoặc object cha
         EnemyBase enemy = other.GetComponent<EnemyBase>();
 
         if (enemy == null)
@@ -26,10 +28,18 @@ public class Bullet : MonoBehaviour
             enemy = other.GetComponentInParent<EnemyBase>();
         }
 
-        // Nếu không phải enemy thì bỏ qua
         if (enemy == null) return;
 
-        enemy.TakeDamage(damage);
+        int finalDamage = damage; 
+
+        if (playerStats != null)
+        {
+            // Tính toán sát thương mới: Gốc + (Gốc * Hệ số Buff)
+            float finalDamageFloat = damage + (damage * playerStats.atkMultiplier);
+
+            finalDamage = Mathf.RoundToInt(finalDamageFloat);
+        }
+        enemy.TakeDamage(finalDamage);
 
         if (bloodPrefabs != null)
         {

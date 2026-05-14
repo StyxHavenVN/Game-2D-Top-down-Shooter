@@ -1,11 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
-/// <summary>
-/// Quản lý máu của người chơi.
-/// Hỗ trợ miễn nhiễm sát thương khi Dash.
-/// </summary>
 public class Health : MonoBehaviour
 {
     [Header("Chỉ số máu")]
@@ -26,6 +21,8 @@ public class Health : MonoBehaviour
     private bool isInvincible = false;
     private bool isDead = false;
 
+    private PlayerStats playerStats;
+
     void Start()
     {
         if (maxHealth <= 0)
@@ -35,6 +32,9 @@ public class Health : MonoBehaviour
         }
 
         currentHealth = maxHealth;
+
+        playerStats = GetComponent<PlayerStats>();
+
         UpdateHealthUI();
     }
 
@@ -49,6 +49,15 @@ public class Health : MonoBehaviour
             return;
         }
 
+        if (playerStats != null && playerStats.defMultiplier > 0)
+        {
+            // Tính lượng sát thương được cản lại (Sát thương gốc * Hệ số buff)
+            float blockedDamage = damage * playerStats.defMultiplier;
+
+            float finalDamageFloat = damage - blockedDamage;
+
+            damage = Mathf.Max(1, Mathf.RoundToInt(finalDamageFloat));
+        }
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
@@ -126,7 +135,7 @@ public class Health : MonoBehaviour
         return isDead;
     }
 
-    private void UpdateHealthUI()
+    public void UpdateHealthUI()
     {
         if (maxHealth <= 0) return;
 

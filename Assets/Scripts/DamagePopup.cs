@@ -20,13 +20,22 @@ public class DamagePopup : MonoBehaviour
     {
         if (textMesh == null)
         {
-            textMesh = GetComponent<TextMeshPro>();
+            textMesh = GetComponentInChildren<TextMeshPro>();
         }
     }
 
     public void Setup(string text, Color color)
     {
-        if (textMesh == null) return;
+        if (textMesh == null)
+        {
+            textMesh = GetComponentInChildren<TextMeshPro>();
+        }
+
+        if (textMesh == null)
+        {
+            Debug.LogError("[DamagePopup] BÁO ĐỘNG: Prefab này KHÔNG CÓ Component TextMeshPro (loại 3D) nào cả! Hãy kiểm tra lại Prefab!");
+            return;
+        }
 
         textMesh.text = text;
         textMesh.color = color;

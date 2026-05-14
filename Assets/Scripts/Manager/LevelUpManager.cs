@@ -28,7 +28,6 @@ public class LevelUpManager : MonoBehaviour
     {
         levelUpPanel.SetActive(false);
 
-        // Đã đổi toàn bộ sang Tiếng Anh
         allUpgrades.Add(new UpgradeOption { title = "STRENGTH", type = UpgradeType.ATK, description = "+10% Damage" });
         allUpgrades.Add(new UpgradeOption { title = "DEFENSE", type = UpgradeType.DEF, description = "-10% Damage Taken" });
         allUpgrades.Add(new UpgradeOption { title = "VITALITY", type = UpgradeType.HP, description = "+20 Max HP" });
@@ -45,7 +44,6 @@ public class LevelUpManager : MonoBehaviour
             int randomIndex = Random.Range(0, pool.Count);
             currentChoices[i] = pool[randomIndex];
 
-            // In chữ ra nút
             buttonTexts[i].text = currentChoices[i].title + "\n<size=80%>" + currentChoices[i].description + "</size>";
             pool.RemoveAt(randomIndex);
         }
@@ -58,14 +56,19 @@ public class LevelUpManager : MonoBehaviour
         switch (chosenUpgrade.type)
         {
             case UpgradeType.ATK:
-                playerStats.atkMultiplier += 0.1f;
+                // Truyền lệnh nâng cấp Sát thương sang PlayerStats
+                playerStats.UpgradeATK(0.1f);
                 Debug.Log("Upgraded ATK");
                 break;
+
             case UpgradeType.DEF:
-                playerStats.defMultiplier += 0.1f;
+                // Truyền lệnh nâng cấp Giảm Sát thương sang PlayerStats
+                playerStats.UpgradeDEF(0.1f);
                 Debug.Log("Upgraded DEF");
                 break;
+
             case UpgradeType.HP:
+                // Truyền lệnh nâng cấp Máu sang PlayerStats
                 playerStats.UpgradeMaxHP(20);
                 Debug.Log("Upgraded HP");
                 break;
