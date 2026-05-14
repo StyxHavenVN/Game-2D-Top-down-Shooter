@@ -1,2 +1,18 @@
 fileFormatVersion: 2
 guid: 92870442e50f3454b81f3d09ecc1af27
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - musicAudioSource: {instanceID: 0}
+  - effectAudioSource: {instanceID: 0}
+  - defaultMusicClip: {fileID: 8300000, guid: 7da63e53b9e2e7d47b4365c730c7d575, type: 3}
+  - bossMusicClip: {fileID: 8300000, guid: cf6ae87ab29a0b34b819b02659b57f06, type: 3}
+  - shootClip: {fileID: 8300000, guid: d88c882304513a8428737cf06914a845, type: 3}
+  - reloadClip: {fileID: 8300000, guid: 88fa6648c42f91144ac584d1af0b3daf, type: 3}
+  - energyClip: {fileID: 8300000, guid: 28ace2352ca7c5643b9488dd26372318, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

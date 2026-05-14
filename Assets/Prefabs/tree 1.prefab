@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 278632578930437394}
   - component: {fileID: 6474368027769185534}
   - component: {fileID: 2259071539532506217}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: tree 1
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -127,7 +127,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.00085294247, y: -0.017059779}
+  m_Offset: {x: 0.00085294247, y: -0.14146464}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -137,7 +137,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.13302192, y: 0.12359963}
+  m_Size: {x: 0.13302192, y: 0.12997934}
   m_EdgeRadius: 0
 --- !u!1 &6590276731360445669
 GameObject:
@@ -149,7 +149,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4184118982157268593}
   - component: {fileID: 5483430992534130213}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}

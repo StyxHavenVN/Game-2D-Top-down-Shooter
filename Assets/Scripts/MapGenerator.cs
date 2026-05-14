@@ -30,40 +30,64 @@ public class MapGenerator : MonoBehaviour
     {
         public string name;
         public GameObject prefab;
+
         [Range(0f, 0.2f)]
         public float density = 0.05f;
     }
 
-    [Header("Cài đặt Vật cản (Đa dạng)")]
+    [Header("Cài đặt Vật cản")]
     public List<ObstacleData> obstacleList = new List<ObstacleData>();
+
+    [Header("Kiểm tra va chạm vật cản")]
+    public float obstacleCheckRadius = 0.8f;
+    public LayerMask obstacleCheckLayer;
+
     private Transform treeContainer;
-
-    // --- CÀI ĐẶT ÁNH SÁNG (GLOOM/BLOOM) ---
-    [Header("Cài đặt Ánh sáng Nắng")]
-    public GameObject sunSpotPrefab;
-    public float lightScale = 20f; // Kích thước của "đám mây/vùng nắng"
-    [Range(0f, 1f)] public float lightThreshold = 0.7f; // Ngưỡng tạo nắng (càng cao nắng càng ít)
-    [Range(0f, 1f)] public float lightSpawnChance = 0.15f; // Xác suất rơi vệt nắng trong vùng sáng (tránh lag)
-
-    private float lightOffsetX;
-    private float lightOffsetY;
-    private Transform lightContainer;
-    // ---------------------------------------
-
     private Dictionary<Vector2Int, bool> generatedChunks = new Dictionary<Vector2Int, bool>();
     private Vector2Int currentPlayerChunk;
 
     void Start()
     {
-        // Random offset cho địa hình
+        if (player == null)
+        {
+            GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
+
+            if (foundPlayer != null)
+            {
+                player = foundPlayer.transform;
+            }
+            else
+            {
+                Debug.LogError("[MapGenerator] Không tìm thấy Player. Hãy gắn Tag 'Player' cho nhân vật hoặc kéo Player vào Inspector.");
+                enabled = false;
+                return;
+            }
+        }
+
+        if (groundTilemap == null)
+        {
+            Debug.LogError("[MapGenerator] Chưa gán Ground Tilemap.");
+            enabled = false;
+            return;
+        }
+
+        if (chunkSize <= 0)
+        {
+            Debug.LogError("[MapGenerator] chunkSize phải lớn hơn 0.");
+            enabled = false;
+            return;
+        }
+
+        if (scale <= 0)
+        {
+            Debug.LogWarning("[MapGenerator] scale đang <= 0, tự đặt lại thành 15.");
+            scale = 15f;
+        }
+
         offsetX = Random.Range(-9999f, 9999f);
         offsetY = Random.Range(-9999f, 9999f);
-        treeContainer = new GameObject("TreeContainer").transform;
 
-        // Random offset cho ánh sáng (để nắng không trùng khớp hoàn toàn với hình dáng đất)
-        lightOffsetX = Random.Range(-9999f, 9999f);
-        lightOffsetY = Random.Range(-9999f, 9999f);
-        lightContainer = new GameObject("SunSpotContainer").transform;
+        treeContainer = new GameObject("TreeContainer").transform;
 
         currentPlayerChunk = GetChunkPosition(player.position);
         UpdateChunks();
@@ -72,7 +96,9 @@ public class MapGenerator : MonoBehaviour
     void Update()
     {
         if (player == null) return;
+
         Vector2Int currentChunk = GetChunkPosition(player.position);
+
         if (currentChunk != currentPlayerChunk)
         {
             currentPlayerChunk = currentChunk;
@@ -82,8 +108,8 @@ public class MapGenerator : MonoBehaviour
 
     Vector2Int GetChunkPosition(Vector3 playerPos)
     {
-        if (groundTilemap == null) return Vector2Int.zero;
         Vector3Int cellPosition = groundTilemap.WorldToCell(playerPos);
+
         return new Vector2Int(
             Mathf.FloorToInt((float)cellPosition.x / chunkSize),
             Mathf.FloorToInt((float)cellPosition.y / chunkSize)
@@ -96,7 +122,11 @@ public class MapGenerator : MonoBehaviour
         {
             for (int yOffset = -renderDistance; yOffset <= renderDistance; yOffset++)
             {
-                Vector2Int chunkToGenerate = new Vector2Int(currentPlayerChunk.x + xOffset, currentPlayerChunk.y + yOffset);
+                Vector2Int chunkToGenerate = new Vector2Int(
+                    currentPlayerChunk.x + xOffset,
+                    currentPlayerChunk.y + yOffset
+                );
+
                 if (!generatedChunks.ContainsKey(chunkToGenerate))
                 {
                     GenerateChunk(chunkToGenerate);
@@ -123,65 +153,88 @@ public class MapGenerator : MonoBehaviour
                 float noiseValue = Mathf.PerlinNoise(xCoord, yCoord);
 
                 TileBase tileToSet = grassTile;
-                if (noiseValue < 0.35f) tileToSet = waterTile;
-                else if (noiseValue < 0.45f) tileToSet = sandTile;
+
+                if (noiseValue < 0.35f)
+                {
+                    tileToSet = waterTile;
+                }
+                else if (noiseValue < 0.45f)
+                {
+                    tileToSet = sandTile;
+                }
 
                 Vector3Int tilePosition = new Vector3Int(tileX, tileY, 0);
                 groundTilemap.SetTile(tilePosition, tileToSet);
 
                 if (tileToSet == grassTile)
                 {
-                    // 1. Trồng cỏ trang trí
-                    if (Random.value < grassDensity && grassDetails != null && grassDetails.Length > 0)
-                    {
-                        TileBase randomGrass = grassDetails[Random.Range(0, grassDetails.Length)];
-                        detailTilemap.SetTile(tilePosition, randomGrass);
-                    }
-
-                    // 2. Trồng cây/đá
+                    SpawnGrassDetail(tilePosition);
                     SpawnObstacles(tilePosition);
-
-                    // 3. SINH VỆT NẮNG (GLOOM/BLOOM)
-                    if (sunSpotPrefab != null)
-                    {
-                        // Tính toán độ sáng của khu vực này bằng lớp Noise thứ 2
-                        float lightNoiseCoordX = (float)tileX / lightScale + lightOffsetX;
-                        float lightNoiseCoordY = (float)tileY / lightScale + lightOffsetY;
-                        float lightNoise = Mathf.PerlinNoise(lightNoiseCoordX, lightNoiseCoordY);
-
-                        // Nếu nằm trong "Vùng có nắng" và trúng xác suất sinh đèn
-                        if (lightNoise > lightThreshold && Random.value < lightSpawnChance)
-                        {
-                            Vector3 worldPos = groundTilemap.GetCellCenterWorld(tilePosition);
-                            Instantiate(sunSpotPrefab, worldPos, Quaternion.identity, lightContainer);
-                        }
-                    }
                 }
             }
+        }
+    }
+
+    void SpawnGrassDetail(Vector3Int tilePosition)
+    {
+        if (detailTilemap == null) return;
+        if (grassDetails == null || grassDetails.Length == 0) return;
+
+        if (Random.value < grassDensity)
+        {
+            TileBase randomGrass = grassDetails[Random.Range(0, grassDetails.Length)];
+            detailTilemap.SetTile(tilePosition, randomGrass);
         }
     }
 
     void SpawnObstacles(Vector3Int tilePosition)
     {
+        if (obstacleList == null || obstacleList.Count == 0) return;
+
         float roll = Random.value;
-        float cumulativeDensity = 0;
+        float cumulativeDensity = 0f;
 
         foreach (ObstacleData obs in obstacleList)
         {
+            if (obs == null) continue;
+
             cumulativeDensity += obs.density;
+
             if (roll < cumulativeDensity)
             {
-                if (obs.prefab == null) break;
+                if (obs.prefab == null)
+                {
+                    Debug.LogWarning("[MapGenerator] Có obstacle chưa gán prefab.");
+                    break;
+                }
 
                 Vector3 worldPos = groundTilemap.GetCellCenterWorld(tilePosition);
-                Collider2D hit = Physics2D.OverlapCircle(worldPos, 0.8f);
+
+                Collider2D hit;
+
+                if (obstacleCheckLayer.value == 0)
+                {
+                    hit = Physics2D.OverlapCircle(worldPos, obstacleCheckRadius);
+                }
+                else
+                {
+                    hit = Physics2D.OverlapCircle(worldPos, obstacleCheckRadius, obstacleCheckLayer);
+                }
 
                 if (hit == null)
                 {
                     Instantiate(obs.prefab, worldPos, Quaternion.identity, treeContainer);
                 }
+
                 break;
             }
         }
     }
+
+#if UNITY_EDITOR
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+    }
+#endif
 }

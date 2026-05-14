@@ -3,20 +3,43 @@ using UnityEngine;
 public class ExpOrb : MonoBehaviour
 {
     [Header("Giá trị kinh nghiệm")]
-    public int expValue = 10; // Cục này cho bao nhiêu điểm?
+    public int expValue = 10;
 
-    // Hàm này tự động chạy khi có một vật thể chạm vào cục EXP
+    [Header("Tự hủy nếu không nhặt")]
+    public float lifeTime = 20f;
+
+    private bool collected = false;
+
+    void Start()
+    {
+        Destroy(gameObject, lifeTime);
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Kiểm tra xem người chạm vào có dán nhãn là "Player" hay không
+        if (collected) return;
+
         if (other.CompareTag("Player"))
         {
-            // Lấy script PlayerStats trên người Player
-            PlayerStats stats = other.GetComponent<PlayerStats>();
+            PlayerStats stats = other.GetComponentInParent<PlayerStats>();
+
             if (stats != null)
             {
-                stats.AddExp(expValue); // Cộng điểm!
-                Destroy(gameObject);    // Bị ăn rồi thì biến mất
+                collected = true;
+
+                stats.AddExp(expValue);
+
+                // Phát âm thanh nhặt Energy / EXP
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlayEnergySound();
+                }
+
+                Destroy(gameObject);
+            }
+            else
+            {
+                Debug.LogWarning("[ExpOrb] Player không có PlayerStats.");
             }
         }
     }
