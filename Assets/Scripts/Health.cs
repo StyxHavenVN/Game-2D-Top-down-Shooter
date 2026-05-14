@@ -4,31 +4,45 @@ using TMPro;
 
 /// <summary>
 /// Quản lý máu của người chơi.
-/// Hỗ trợ trạng thái miễn nhiễm sát thương (i-frames) khi đang Dash.
+/// Hỗ trợ miễn nhiễm sát thương khi Dash.
 /// </summary>
 public class Health : MonoBehaviour
 {
+    [Header("Chỉ số máu")]
     public int maxHealth = 100;
     public int currentHealth;
+
+    [Header("Giao Diện Thanh Máu")]
+    public Image healthFillImage;
+    public TextMeshProUGUI hpText;
+
+    [Header("Damage Popup")]
+    public DamagePopup damagePopupPrefab;
+    public Vector3 damagePopupOffset = new Vector3(0f, 0.8f, 0f);
 
     [Header("Quản lý Game Over")]
     public GameOverManager gameOverManager;
 
-    // Trạng thái miễn nhiễm — được PlayerDash bật/tắt
     private bool isInvincible = false;
+    private bool isDead = false;
 
     void Start()
     {
+        if (maxHealth <= 0)
+        {
+            Debug.LogWarning("[Health] maxHealth phải lớn hơn 0. Tự đặt lại thành 100.");
+            maxHealth = 100;
+        }
+
         currentHealth = maxHealth;
         UpdateHealthUI();
     }
 
-    /// <summary>
-    /// Nhận sát thương. Nếu đang i-frames (dash) thì bỏ qua hoàn toàn.
-    /// </summary>
     public void TakeDamage(int damage)
     {
-        // ← ĐIỂM QUAN TRỌNG: Bỏ qua mọi sát thương khi đang Dash
+        if (isDead) return;
+        if (damage <= 0) return;
+
         if (isInvincible)
         {
             Debug.Log("[Health] Đang i-frames — miễn nhiễm sát thương!");
@@ -36,48 +50,94 @@ public class Health : MonoBehaviour
         }
 
         currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        // 🔴 CHỚP ĐỎ MÀN HÌNH khi bị đánh (tạo cảm giác nguy hiểm!)
-        if (DamageVignette.Instance != null)
-            DamageVignette.Instance.Flash();
+        ShowDamagePopup(damage);
 
-        // 📸 RUNG CAMERA MẠNH khi Player bị đánh (đau hơn quái trúng đạn)
-        if (CameraShake.Instance != null)
-            CameraShake.Instance.Shake(0.1f, 0.05f);
+        UpdateHealthUI();
 
         if (currentHealth <= 0)
         {
-            currentHealth = 0;
-            if (gameOverManager != null)
-                gameOverManager.ShowGameOver();
+            Die();
         }
-
-        UpdateHealthUI();
     }
 
-    /// <summary>Bật hoặc tắt trạng thái miễn nhiễm sát thương (i-frames).</summary>
+    private void ShowDamagePopup(int damage)
+    {
+        if (damagePopupPrefab == null) return;
+
+        Vector3 spawnPos = transform.position + damagePopupOffset;
+
+        DamagePopup popup = Instantiate(
+            damagePopupPrefab,
+            spawnPos,
+            Quaternion.identity
+        );
+
+        popup.Setup("-" + damage, Color.red);
+    }
+
+    private void Die()
+    {
+        if (isDead) return;
+
+        isDead = true;
+        currentHealth = 0;
+        UpdateHealthUI();
+
+        Debug.Log("[Health] Player đã chết!");
+
+        if (gameOverManager != null)
+        {
+            gameOverManager.ShowGameOver();
+        }
+        else
+        {
+            Debug.LogWarning("[Health] Chưa gán GameOverManager.");
+        }
+    }
+
     public void SetInvincible(bool value)
     {
+        if (isDead) return;
+
         isInvincible = value;
         Debug.Log($"[Health] I-frames: {(value ? "BẬT" : "TẮT")}");
     }
 
-    /// <summary>Hồi máu cho người chơi (dùng cho item heal).</summary>
     public void Heal(int amount)
     {
-        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+        if (isDead) return;
+        if (amount <= 0) return;
+
+        currentHealth += amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
         UpdateHealthUI();
     }
 
-    /// <summary>Trả về true nếu đang trong trạng thái miễn nhiễm.</summary>
-    public bool IsInvincible() => isInvincible;
-
-    // Cập nhật giao diện thanh máu qua UIManager
-    public void UpdateHealthUI()
+    public bool IsInvincible()
     {
-        if (UIManager.Instance != null)
+        return isInvincible;
+    }
+
+    public bool IsDead()
+    {
+        return isDead;
+    }
+
+    private void UpdateHealthUI()
+    {
+        if (maxHealth <= 0) return;
+
+        if (healthFillImage != null)
         {
-            UIManager.Instance.UpdateHP(currentHealth, maxHealth);
+            healthFillImage.fillAmount = (float)currentHealth / maxHealth;
+        }
+
+        if (hpText != null)
+        {
+            hpText.text = currentHealth + " / " + maxHealth;
         }
     }
 }

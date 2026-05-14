@@ -38,24 +38,21 @@ public class DashCooldownUI : MonoBehaviour
     {
         if (playerDash == null) return;
 
-        float progress = 1f - playerDash.GetCooldownPercent(); // 0 = ready, 1 = full cooldown
+        float cooldownPercent = playerDash.GetCooldownPercent();
 
-        // Slider (1 = cooldown đầy, 0 = sẵn sàng — fill từ phải sang trái)
         if (cooldownSlider != null)
-            cooldownSlider.value = progress;
+            cooldownSlider.value = cooldownPercent;
 
-        // Icon màu
         if (dashIconImage != null)
-            dashIconImage.color = progress <= 0f ? readyColor : cooldownColor;
+            dashIconImage.color = cooldownPercent <= 0f ? readyColor : cooldownColor;
 
-        // Text
         if (cooldownText != null)
         {
-            if (progress <= 0f)
+            if (cooldownPercent <= 0f)
                 cooldownText.text = "READY";
             else
             {
-                float remaining = progress * playerDash.dashCooldown;
+                float remaining = cooldownPercent * playerDash.dashCooldown;
                 cooldownText.text = $"{remaining:F1}s";
             }
         }

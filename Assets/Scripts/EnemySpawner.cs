@@ -2,36 +2,57 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [Header("Danh sách các loại quái")]
-    public GameObject[] enemyPrefabs; // Chứa mảng các con quái mẫu (Gắn BasicEnemy và RangedEnemy vào đây)
-    public Transform player;       // Chứa vị trí người chơi
+    [Header("Danh sách quái có thể spawn")]
+    public GameObject[] enemyPrefabs;
 
-    public float spawnRate = 3f;   // Cứ 3 giây đẻ 1 con
-    private float timer = 0f;      // Đồng hồ đếm giờ
+    [Header("Player")]
+    public Transform player;
 
-    public float difficultyMultiplier = 1f; // Hệ số độ khó ban đầu là x1
+    [Header("Spawn")]
+    public float spawnRate = 3f;
+    public float spawnDistance = 8f;
+    private float timer = 0f;
+
+    [Header("Độ khó")]
+    public float difficultyMultiplier = 1f;
+    public float difficultyIncreaseRate = 0.01f;
+    public float minSpawnRate = 0.5f;
+    public float spawnRateDecrease = 0.05f;
+
+    [Header("Tỉ lệ spawn")]
+    [Range(0f, 100f)] public float meleeChance = 60f;
+    [Range(0f, 100f)] public float rangedChance = 25f;
+    [Range(0f, 100f)] public float exploderChance = 15f;
 
     void Start()
     {
-        if (player == null) player = GameObject.Find("Player").transform;
+        if (player == null)
+        {
+            GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
+
+            if (foundPlayer != null)
+            {
+                player = foundPlayer.transform;
+            }
+            else
+            {
+                Debug.LogError("[EnemySpawner] Không tìm thấy Player. Hãy gắn tag Player hoặc kéo Player vào Inspector.");
+            }
+        }
     }
 
     void Update()
     {
-        // 1. Hệ thống đếm thời gian
         timer += Time.deltaTime;
 
-        // 2. Làm quái mạnh lên theo thời gian (Mỗi giây tăng 1% máu)
-        difficultyMultiplier += Time.deltaTime * 0.01f;
+        difficultyMultiplier += Time.deltaTime * difficultyIncreaseRate;
 
-        // 3. Đến giờ thì đẻ quái
         if (timer >= spawnRate)
         {
             SpawnEnemy();
-            timer = 0f; // Reset đồng hồ
+            timer = 0f;
 
-            // Ép người chơi: Càng về sau quái đẻ càng nhanh (Nhanh nhất là 0.5s/con)
-            spawnRate = Mathf.Max(0.5f, spawnRate - 0.05f);
+            spawnRate = Mathf.Max(minSpawnRate, spawnRate - spawnRateDecrease);
         }
     }
 
@@ -39,31 +60,84 @@ public class EnemySpawner : MonoBehaviour
     {
         if (player == null) return;
 
-        // Tính toán vị trí đẻ quái ngẫu nhiên xung quanh người chơi (cách khoảng 8 mét)
-        Vector2 randomDirection = Random.insideUnitCircle.normalized;
-        Vector2 spawnPosition = (Vector2)player.position + (randomDirection * 8f);
+        GameObject prefabToSpawn = GetRandomEnemyPrefab();
 
-        // Tránh lỗi index out of bounds nếu chưa cấu hình quái
-        if (enemyPrefabs == null || enemyPrefabs.Length == 0) return;
-
-        // Chọn ngẫu nhiên 1 loại quái trong danh sách
-        GameObject prefabToSpawn = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
-
-        // LẤY QUÁI TỪ KHO (Object Pool) thay vì Instantiate
-        GameObject newEnemy = ObjectPool.Instance.GetEnemy(prefabToSpawn, spawnPosition);
-
-        // Cường hóa con quái vừa sinh ra dựa theo hệ số độ khó hiện tại
-        EnemyHealth enemyHealth = newEnemy.GetComponent<EnemyHealth>();
-        if (enemyHealth != null)
+        if (prefabToSpawn == null)
         {
-            // Nhân máu gốc với độ khó. Ví dụ hệ số 1.5 thì quái sẽ có 150 máu.
-            enemyHealth.maxHealth = enemyHealth.maxHealth * difficultyMultiplier;
-
-            // Reset máu (rất quan trọng — quái lấy ra từ Pool có thể đang máu 0 từ lần chết trước)
-            enemyHealth.ResetHealth();
-
-            // Đổi tên nó một chút cho ngầu để bạn dễ theo dõi ở Console
-            newEnemy.name = "Enemy Lv." + (difficultyMultiplier * 10).ToString("0");
+            Debug.LogError("[EnemySpawner] Chưa kéo enemy prefab vào danh sách Enemy Prefabs.");
+            return;
         }
+
+        Vector2 randomDirection = Random.insideUnitCircle.normalized;
+
+        if (randomDirection == Vector2.zero)
+        {
+            randomDirection = Vector2.right;
+        }
+
+        Vector2 spawnPosition = (Vector2)player.position + randomDirection * spawnDistance;
+
+        GameObject newEnemy = Instantiate(
+            prefabToSpawn,
+            spawnPosition,
+            Quaternion.identity
+        );
+
+        EnemyBase enemyBase = newEnemy.GetComponent<EnemyBase>();
+
+        if (enemyBase == null)
+        {
+            enemyBase = newEnemy.GetComponentInParent<EnemyBase>();
+        }
+
+        if (enemyBase != null)
+        {
+            enemyBase.maxHealth = Mathf.RoundToInt(enemyBase.maxHealth * difficultyMultiplier);
+
+            newEnemy.name = enemyBase.enemyName + " Lv." + (difficultyMultiplier * 10).ToString("0");
+        }
+        else
+        {
+            Debug.LogWarning("[EnemySpawner] Prefab " + prefabToSpawn.name + " chưa có script kế thừa EnemyBase.");
+        }
+    }
+
+    GameObject GetRandomEnemyPrefab()
+    {
+        if (enemyPrefabs == null || enemyPrefabs.Length == 0)
+        {
+            return null;
+        }
+
+        // Nếu bạn kéo đúng thứ tự:
+        // 0 = MeleeEnemy
+        // 1 = RangedEnemy
+        // 2 = ExploderEnemy
+
+        if (enemyPrefabs.Length < 3)
+        {
+            return enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
+        }
+
+        float totalChance = meleeChance + rangedChance + exploderChance;
+
+        if (totalChance <= 0)
+        {
+            return enemyPrefabs[0];
+        }
+
+        float roll = Random.Range(0f, totalChance);
+
+        if (roll < meleeChance)
+        {
+            return enemyPrefabs[0]; // Melee
+        }
+
+        if (roll < meleeChance + rangedChance)
+        {
+            return enemyPrefabs[1]; // Ranged
+        }
+
+        return enemyPrefabs[2]; // Exploder
     }
 }

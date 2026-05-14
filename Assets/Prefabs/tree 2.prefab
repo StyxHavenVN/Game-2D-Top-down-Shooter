@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 278632578930437394}
   - component: {fileID: 6474368027769185534}
   - component: {fileID: 8132854574790351237}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: tree 2
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -149,7 +149,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4184118982157268593}
   - component: {fileID: 5483430992534130213}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
