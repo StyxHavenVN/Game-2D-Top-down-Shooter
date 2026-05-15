@@ -17,6 +17,9 @@ public class GameManager : MonoBehaviour
     [Header("Chống cộng kill lúc mới vào game")]
     public float ignoreKillAtStartTime = 0.5f;
 
+    [Header("Giao diện Win")]
+    public GameObject victoryPanel;
+
     private int currentKills;
     private int killThreshold;
     private bool bossSpawned;
@@ -33,7 +36,6 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
 
-        // Reset chắc chắn ngay từ Awake
         currentKills = 0;
         bossSpawned = false;
         gameStartTime = Time.time;
@@ -69,6 +71,11 @@ public class GameManager : MonoBehaviour
         currentKills = 0;
         bossSpawned = false;
 
+        if (victoryPanel != null)
+        {
+            victoryPanel.SetActive(false);
+        }
+
         Debug.Log("[GameManager] Boss sẽ xuất hiện tại: " + killThreshold + " kills");
 
         UpdateKillUI();
@@ -76,7 +83,6 @@ public class GameManager : MonoBehaviour
 
     public void RegisterKill()
     {
-        // Chặn trường hợp enemy bị destroy/chết ngay lúc scene vừa load
         if (Time.time - gameStartTime < ignoreKillAtStartTime)
         {
             Debug.LogWarning("[GameManager] Bỏ qua kill lúc mới vào game.");
@@ -138,6 +144,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ShowVictory()
+    {
+        if (victoryPanel != null)
+        {
+            victoryPanel.SetActive(true);
+        }
+        Time.timeScale = 0f;
+
+        Debug.Log("YOU WIN! Chúc mừng bạn đã tiêu diệt Boss!");
+    }
     public int GetKills()
     {
         return currentKills;

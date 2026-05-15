@@ -241,6 +241,11 @@ public class BossEnemy : EnemyBase
     {
         Debug.Log("Boss đã chết!");
 
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ShowVictory();
+        }
+
         base.Die();
 
         if (AudioManager.Instance != null)

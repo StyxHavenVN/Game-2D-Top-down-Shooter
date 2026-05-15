@@ -84,7 +84,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 573507143
-  m_SortingLayer: 1
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -8975300739212716318, guid: d62f8768ed6ab8b48a749ee48bfd7aec, type: 3}
@@ -212,7 +212,7 @@ MonoBehaviour:
   damagePopupColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   expReward: 30
   expOrbPrefab: {fileID: 7117957361752824279, guid: b0e668b8d95534143aee3e74ce848871, type: 3}
-  moveSpeed: 5
+  moveSpeed: 4
   contactDamage: 20
   damageCooldown: 0.8
   bossBulletPrefab: {fileID: 8168581384306525407, guid: 3b70612ac9477464c8149a33305ac727, type: 3}
