@@ -4211,6 +4211,8 @@ MonoBehaviour:
   healthBarUI: {fileID: 1153328936}
   expBarUI: {fileID: 1684817724}
   killCounterUI: {fileID: 1477456614}
+  ammoUI: {fileID: 1184622512}
+  enemySpawner: {fileID: 1215424380}
 --- !u!114 &1215424380
 MonoBehaviour:
   m_ObjectHideFlags: 0

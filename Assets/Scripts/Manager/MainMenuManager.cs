@@ -11,65 +11,141 @@ public class MainMenuManager : MonoBehaviour
 
     [Header("Player & Game UI")]
     public GameObject player;
-    public GameObject healthBarUI; // MỚI THÊM: Cổng kết nối với thanh máu
+    public GameObject healthBarUI;
     public GameObject expBarUI;
-    public GameObject killCounterUI; // Để ẩn/hiện chữ "Kills"
+    public GameObject killCounterUI;
+    public GameObject ammoUI;
 
-    public enum WeaponType { Pistol, Shotgun, Sword, None }
+    [Header("Game Systems")]
+    public EnemySpawner enemySpawner;
+
+    public enum WeaponType
+    {
+        Pistol,
+        Shotgun,
+        Sword,
+        None
+    }
+
     public static WeaponType selectedWeapon = WeaponType.None;
 
     void Start()
     {
-        // Pause time and show menu on start
+        // Dừng game ở menu
         Time.timeScale = 0f;
-        mainMenuPanel.SetActive(true);
-        player.SetActive(false);
 
-        if (healthBarUI != null) healthBarUI.SetActive(false);
-        if (expBarUI != null) expBarUI.SetActive(false);
-        if (killCounterUI != null) killCounterUI.SetActive(false);
+        selectedWeapon = WeaponType.None;
 
-        // Hide Start button and show default text initially
-        startButton.SetActive(false);
-        weaponNameText.text = "NO WEAPON SELECTED";
-        weaponStatsText.text = "Please select a weapon to view stats and start playing.";
+        if (mainMenuPanel != null)
+            mainMenuPanel.SetActive(true);
+
+        if (player != null)
+            player.SetActive(false);
+
+        if (healthBarUI != null)
+            healthBarUI.SetActive(false);
+
+        if (expBarUI != null)
+            expBarUI.SetActive(false);
+
+        if (killCounterUI != null)
+            killCounterUI.SetActive(false);
+
+        if (ammoUI != null)
+            ammoUI.SetActive(false);
+
+        if (startButton != null)
+            startButton.SetActive(false);
+
+        if (weaponNameText != null)
+            weaponNameText.text = "NO WEAPON SELECTED";
+
+        if (weaponStatsText != null)
+            weaponStatsText.text = "Please select a weapon to view stats and start playing.";
+
+        if (enemySpawner == null)
+            enemySpawner = FindAnyObjectByType<EnemySpawner>();
+
+        // Quan trọng: tắt spawner khi đang ở menu
+        if (enemySpawner != null)
+            enemySpawner.enabled = false;
     }
 
     public void SelectPistol()
     {
         selectedWeapon = WeaponType.Pistol;
-        weaponNameText.text = "PISTOL";
-        weaponStatsText.text = "Damage: Low\nFire rate: Fast\nEffect (5%): Pierce target (12 seconds)";
-        startButton.SetActive(true);
+
+        if (weaponNameText != null)
+            weaponNameText.text = "PISTOL";
+
+        if (weaponStatsText != null)
+            weaponStatsText.text = "Damage: Low\nFire rate: Fast\nAmmo: 17";
+
+        if (startButton != null)
+            startButton.SetActive(true);
     }
 
     public void SelectShotgun()
     {
         selectedWeapon = WeaponType.Shotgun;
-        weaponNameText.text = "SHOTGUN";
-        weaponStatsText.text = "Damage: High\nFire rate: Slow (Spread shot)\nEffect (5%): Burn (10 seconds)";
-        startButton.SetActive(true);
+
+        if (weaponNameText != null)
+            weaponNameText.text = "SHOTGUN";
+
+        if (weaponStatsText != null)
+            weaponStatsText.text = "Damage: High\nFire rate: Slow\nAmmo: 5\nShape: Cone blast";
+
+        if (startButton != null)
+            startButton.SetActive(true);
     }
 
     public void SelectSword()
     {
         selectedWeapon = WeaponType.Sword;
-        weaponNameText.text = "MELEE SWORD";
-        weaponStatsText.text = "Damage: Very high\nRange: Melee (High risk)\nEffect (5%): Lifesteal (8 seconds)";
-        startButton.SetActive(true);
+
+        if (weaponNameText != null)
+            weaponNameText.text = "MELEE SWORD";
+
+        if (weaponStatsText != null)
+            weaponStatsText.text = "Damage: Very high\nRange: Melee\nEffect: Lifesteal";
+
+        if (startButton != null)
+            startButton.SetActive(true);
     }
 
     public void ClickStartGame()
     {
-        // Close menu, enable player, and resume game time
-        mainMenuPanel.SetActive(false);
-        player.SetActive(true);
+        if (selectedWeapon == WeaponType.None)
+        {
+            Debug.LogWarning("[MainMenuManager] Chưa chọn vũ khí.");
+            return;
+        }
 
-        if (healthBarUI != null) healthBarUI.SetActive(true);
-        if (expBarUI != null) expBarUI.SetActive(true);
-        if (killCounterUI != null) killCounterUI.SetActive(true);
+        if (mainMenuPanel != null)
+            mainMenuPanel.SetActive(false);
 
+        if (player != null)
+            player.SetActive(true);
+
+        if (healthBarUI != null)
+            healthBarUI.SetActive(true);
+
+        if (expBarUI != null)
+            expBarUI.SetActive(true);
+
+        if (killCounterUI != null)
+            killCounterUI.SetActive(true);
+
+        if (ammoUI != null)
+            ammoUI.SetActive(true);
+
+        // Bật game chạy lại
         Time.timeScale = 1f;
-        Debug.Log("Game started with weapon: " + selectedWeapon.ToString());
+
+        // Bật spawner sau khi bắt đầu game
+        if (enemySpawner != null)
+            enemySpawner.enabled = true;
+
+        Debug.Log("[MainMenuManager] Game started with weapon: " + selectedWeapon);
     }
 }
