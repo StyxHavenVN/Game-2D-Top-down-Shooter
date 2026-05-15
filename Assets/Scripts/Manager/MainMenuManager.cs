@@ -31,7 +31,6 @@ public class MainMenuManager : MonoBehaviour
 
     void Start()
     {
-        // Dừng game ở menu
         Time.timeScale = 0f;
 
         selectedWeapon = WeaponType.None;
@@ -51,9 +50,6 @@ public class MainMenuManager : MonoBehaviour
         if (killCounterUI != null)
             killCounterUI.SetActive(false);
 
-        if (ammoUI != null)
-            ammoUI.SetActive(false);
-
         if (startButton != null)
             startButton.SetActive(false);
 
@@ -66,9 +62,14 @@ public class MainMenuManager : MonoBehaviour
         if (enemySpawner == null)
             enemySpawner = FindAnyObjectByType<EnemySpawner>();
 
-        // Quan trọng: tắt spawner khi đang ở menu
         if (enemySpawner != null)
             enemySpawner.enabled = false;
+
+        EnemyBullet[] enemyBullets = FindObjectsByType<EnemyBullet>(FindObjectsSortMode.None);
+        foreach (EnemyBullet bullet in enemyBullets)
+        {
+            Destroy(bullet.gameObject);
+        }
     }
 
     public void SelectPistol()
