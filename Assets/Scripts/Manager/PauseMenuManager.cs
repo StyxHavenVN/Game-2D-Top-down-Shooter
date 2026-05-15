@@ -1,99 +1,157 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class PauseMenuManager : MonoBehaviour
 {
-    [Header("UI Panels")]
-    [SerializeField] private GameObject pauseMenuPanel;
+    [Header("Pause UI")]
+    public GameObject pausePanel;
+    public GameObject optionsPanel;
 
-    [Header("UI Buttons")]
-    [SerializeField] private Button resumeButton;
-    [SerializeField] private Button optionsButton;
-    [SerializeField] private Button mainMenuButton;
-    [SerializeField] private Button quitButton;   
+    [Header("Menu chọn vũ khí")]
+    public GameObject mainMenuPanel;
 
-    [Header("Scenes to Load")]
-    [SerializeField] private string mainMenuSceneName = "MainMenuScene";
-    public static bool IsPauseGame { get; private set; } = false;
+    [Header("Game UI")]
+    public GameObject player;
+    public GameObject healthBarUI;
+    public GameObject expBarUI;
+    public GameObject killCounterUI;
+    public GameObject ammoUI;
+
+    [Header("Game Systems")]
+    public EnemySpawner enemySpawner;
+
+    private bool isPaused = false;
 
     void Start()
     {
-        if (pauseMenuPanel != null)
-        {
-            pauseMenuPanel.SetActive(false);
-        }
+        if (pausePanel != null)
+            pausePanel.SetActive(false);
 
-        // Nối code với nút bấm
-        if (resumeButton != null) resumeButton.onClick.AddListener(ResumeGame);
-        if (optionsButton != null) optionsButton.onClick.AddListener(OpenOptions);
-        if (mainMenuButton != null) mainMenuButton.onClick.AddListener(QuitToMainMenu);
-        if (quitButton != null) quitButton.onClick.AddListener(QuitGame); 
-
-        Time.timeScale = 1f;
-        IsPauseGame = false;
+        if (optionsPanel != null)
+            optionsPanel.SetActive(false);
     }
 
     void Update()
     {
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (Keyboard.current == null) return;
+
+        // Nếu đang ở menu chọn vũ khí thì không cho mở pause
+        if (mainMenuPanel != null && mainMenuPanel.activeSelf)
         {
-            TogglePauseMenu();
+            return;
         }
 
-        else if (Input.GetKeyDown(KeyCode.Escape))
+        // Nếu chưa chọn vũ khí thì cũng không cho pause
+        if (MainMenuManager.selectedWeapon == MainMenuManager.WeaponType.None)
         {
-            TogglePauseMenu();
+            return;
+        }
+
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            if (isPaused)
+            {
+                ResumeGame();
+            }
+            else
+            {
+                PauseGame();
+            }
         }
     }
 
-    public void TogglePauseMenu()
+    public void PauseGame()
     {
-        if (pauseMenuPanel == null) return;
+        // Chặn pause khi đang ở menu chọn vũ khí
+        if (mainMenuPanel != null && mainMenuPanel.activeSelf)
+            return;
 
-        if (IsPauseGame)
-        {
-            ResumeGame();
-        }
-        else
-        {
-            PauseGame();
-        }
-    }
+        if (MainMenuManager.selectedWeapon == MainMenuManager.WeaponType.None)
+            return;
 
-    private void PauseGame()
-    {
-        pauseMenuPanel.SetActive(true);
+        isPaused = true;
+
+        if (pausePanel != null)
+            pausePanel.SetActive(true);
+
+        if (optionsPanel != null)
+            optionsPanel.SetActive(false);
+
         Time.timeScale = 0f;
-        IsPauseGame = true;
-        Debug.Log("Game Paused");
+
+        Debug.Log("[PauseMenuManager] Pause");
     }
 
     public void ResumeGame()
     {
-        pauseMenuPanel.SetActive(false);
+        isPaused = false;
+
+        if (pausePanel != null)
+            pausePanel.SetActive(false);
+
+        if (optionsPanel != null)
+            optionsPanel.SetActive(false);
+
         Time.timeScale = 1f;
-        IsPauseGame = false;
-        Debug.Log("Game Resumed");
+
+        Debug.Log("[PauseMenuManager] Resume");
     }
 
-    private void OpenOptions()
+    public void OpenOptions()
     {
-        Debug.Log("Opening Options Menu");
-    }
-    public void QuitToMainMenu()
-    {
-        Time.timeScale = 1f;
-        IsPauseGame = false;
+        if (pausePanel != null)
+            pausePanel.SetActive(false);
 
-        Debug.Log("Quitting to Main Menu...");
-        SceneManager.LoadScene(mainMenuSceneName);
+        if (optionsPanel != null)
+            optionsPanel.SetActive(true);
+
+        Debug.Log("[PauseMenuManager] Open Options");
     }
-    public void QuitGame()
+
+    public void CloseOptions()
     {
-        Debug.Log("Quitting Game completely...");
-        Application.Quit();
+        if (optionsPanel != null)
+            optionsPanel.SetActive(false);
+
+        if (pausePanel != null)
+            pausePanel.SetActive(true);
+    }
+
+    public void BackToMenu()
+    {
+        isPaused = false;
+
+        if (pausePanel != null)
+            pausePanel.SetActive(false);
+
+        if (optionsPanel != null)
+            optionsPanel.SetActive(false);
+
+        if (mainMenuPanel != null)
+            mainMenuPanel.SetActive(true);
+
+        if (player != null)
+            player.SetActive(false);
+
+        if (healthBarUI != null)
+            healthBarUI.SetActive(false);
+
+        if (expBarUI != null)
+            expBarUI.SetActive(false);
+
+        if (killCounterUI != null)
+            killCounterUI.SetActive(false);
+
+        if (ammoUI != null)
+            ammoUI.SetActive(false);
+
+        if (enemySpawner != null)
+            enemySpawner.enabled = false;
+
+        MainMenuManager.selectedWeapon = MainMenuManager.WeaponType.None;
+
+        Time.timeScale = 0f;
+
+        Debug.Log("[PauseMenuManager] Back To Menu");
     }
 }

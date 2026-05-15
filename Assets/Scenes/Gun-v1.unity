@@ -1210,7 +1210,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1215424384}
         m_TargetAssemblyTypeName: PauseMenuManager, Assembly-CSharp
-        m_MethodName: QuitToMainMenu
+        m_MethodName: BackToMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4218,12 +4218,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75a91f0866e0a0a4bbc4877c0aab9ad5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenuManager
-  pauseMenuPanel: {fileID: 1336766195}
-  resumeButton: {fileID: 304388719}
-  optionsButton: {fileID: 1602644056}
-  mainMenuButton: {fileID: 583496223}
-  quitButton: {fileID: 0}
-  mainMenuSceneName: MainMenuScene
+  pausePanel: {fileID: 1336766195}
+  optionsPanel: {fileID: 0}
+  mainMenuPanel: {fileID: 1973106005}
+  player: {fileID: 917658874}
+  healthBarUI: {fileID: 1153328936}
+  expBarUI: {fileID: 1684817724}
+  killCounterUI: {fileID: 1477456614}
+  ammoUI: {fileID: 1184622512}
 --- !u!1 &1245024262
 GameObject:
   m_ObjectHideFlags: 0
